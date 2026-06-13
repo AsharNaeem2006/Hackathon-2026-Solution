@@ -1,0 +1,8 @@
+consumer_id,consumer_name,address,city,avg_monthly_units_kwh,avg_monthly_bill_pkr,connection_type
+WAP-100234,Ahmad Ali Khan,House 12 Street 5 F-8 Markaz,Islamabad,4200,310000,Domestic
+WAP-100892,Sana Fatima,Plot 45 DHA Phase 6,Lahore,1800,135000,Domestic
+WAP-101455,Bilal Hussain,House 9 Bahria Town,Rawalpindi,950,68000,Domestic
+WAP-102110,Mariam Sheikh,Flat 3B Clifton Block 5,Karachi,2600,195000,Domestic
+WAP-102998,Tariq Mehmood,House 77 Model Town,Lahore,5100,375000,Domestic
+WAP-103321,Nadia Chaudhry,House 21 G-9/2 Islamabad,Islamabad,1100,82000,Domestic
+WAP-104120,Usman Farooq,House 5 Gulberg III,Lahore,1400,98000,Domestic

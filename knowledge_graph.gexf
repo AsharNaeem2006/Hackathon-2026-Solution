@@ -1,0 +1,401 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-06-12">
+    <creator>NetworkX 3.6.1</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <attributes mode="static" class="edge">
+      <attribute id="8" title="relation" type="string" />
+    </attributes>
+    <attributes mode="static" class="node">
+      <attribute id="0" title="type" type="string" />
+      <attribute id="1" title="name" type="string" />
+      <attribute id="2" title="city" type="string" />
+      <attribute id="3" title="make" type="string" />
+      <attribute id="4" title="model" type="string" />
+      <attribute id="5" title="value" type="long" />
+      <attribute id="6" title="bill" type="long" />
+      <attribute id="7" title="status" type="string" />
+    </attributes>
+    <nodes>
+      <node id="ENT-11-1" label="ENT-11-1">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Ahmad Ali Khan" />
+          <attvalue for="2" value="Islamabad" />
+        </attvalues>
+      </node>
+      <node id="ISB-2024-0011" label="ISB-2024-0011">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Toyota" />
+          <attvalue for="4" value="Land Cruiser" />
+          <attvalue for="5" value="45000000" />
+        </attvalues>
+      </node>
+      <node id="ISB-2023-7765" label="ISB-2023-7765">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Toyota" />
+          <attvalue for="4" value="Fortuner" />
+          <attvalue for="5" value="18500000" />
+        </attvalues>
+      </node>
+      <node id="WAP-100234" label="WAP-100234">
+        <attvalues>
+          <attvalue for="0" value="Meter" />
+          <attvalue for="6" value="310000" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-11-1" label="FBR-ENT-11-1">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Non-Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-22-2" label="ENT-22-2">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Ahmed A. Khan" />
+          <attvalue for="2" value="Islamabad" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-22-2" label="FBR-ENT-22-2">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Non-Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-33-3" label="ENT-33-3">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Sana Fatima" />
+          <attvalue for="2" value="Lahore" />
+        </attvalues>
+      </node>
+      <node id="LHR-2022-3344" label="LHR-2022-3344">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Honda" />
+          <attvalue for="4" value="Civic" />
+          <attvalue for="5" value="6500000" />
+        </attvalues>
+      </node>
+      <node id="WAP-100892" label="WAP-100892">
+        <attvalues>
+          <attvalue for="0" value="Meter" />
+          <attvalue for="6" value="135000" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-33-3" label="FBR-ENT-33-3">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-44-4" label="ENT-44-4">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Bilal Hussain" />
+          <attvalue for="2" value="Rawalpindi" />
+        </attvalues>
+      </node>
+      <node id="RWP-2021-9981" label="RWP-2021-9981">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Suzuki" />
+          <attvalue for="4" value="Alto" />
+          <attvalue for="5" value="2200000" />
+        </attvalues>
+      </node>
+      <node id="WAP-101455" label="WAP-101455">
+        <attvalues>
+          <attvalue for="0" value="Meter" />
+          <attvalue for="6" value="68000" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-44-4" label="FBR-ENT-44-4">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-55-5" label="ENT-55-5">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Bilal Husain" />
+          <attvalue for="2" value="Rawalpindi" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-55-5" label="FBR-ENT-55-5">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Non-Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-66-6" label="ENT-66-6">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Mariam Sheikh" />
+          <attvalue for="2" value="Karachi" />
+        </attvalues>
+      </node>
+      <node id="KHI-2020-1123" label="KHI-2020-1123">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Toyota" />
+          <attvalue for="4" value="Corolla" />
+          <attvalue for="5" value="4800000" />
+        </attvalues>
+      </node>
+      <node id="WAP-102110" label="WAP-102110">
+        <attvalues>
+          <attvalue for="0" value="Meter" />
+          <attvalue for="6" value="195000" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-66-6" label="FBR-ENT-66-6">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-77-7" label="ENT-77-7">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Tariq Mehmood" />
+          <attvalue for="2" value="Lahore" />
+        </attvalues>
+      </node>
+      <node id="LHR-2023-5567" label="LHR-2023-5567">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Toyota" />
+          <attvalue for="4" value="Prado" />
+          <attvalue for="5" value="28000000" />
+        </attvalues>
+      </node>
+      <node id="WAP-102998" label="WAP-102998">
+        <attvalues>
+          <attvalue for="0" value="Meter" />
+          <attvalue for="6" value="375000" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-77-7" label="FBR-ENT-77-7">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Non-Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-88-8" label="ENT-88-8">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="M. Tariq Mehmud" />
+          <attvalue for="2" value="Lahore" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-88-8" label="FBR-ENT-88-8">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Non-Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-99-9" label="ENT-99-9">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Nadia Chaudhry" />
+          <attvalue for="2" value="Islamabad" />
+        </attvalues>
+      </node>
+      <node id="ISB-2022-4432" label="ISB-2022-4432">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Suzuki" />
+          <attvalue for="4" value="Cultus" />
+          <attvalue for="5" value="2900000" />
+        </attvalues>
+      </node>
+      <node id="WAP-103321" label="WAP-103321">
+        <attvalues>
+          <attvalue for="0" value="Meter" />
+          <attvalue for="6" value="82000" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-99-9" label="FBR-ENT-99-9">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Filer" />
+        </attvalues>
+      </node>
+      <node id="ENT-01-0" label="ENT-01-0">
+        <attvalues>
+          <attvalue for="0" value="Person" />
+          <attvalue for="1" value="Usman Farooq" />
+          <attvalue for="2" value="Lahore" />
+        </attvalues>
+      </node>
+      <node id="LHR-2024-8810" label="LHR-2024-8810">
+        <attvalues>
+          <attvalue for="0" value="Vehicle" />
+          <attvalue for="3" value="Honda" />
+          <attvalue for="4" value="City" />
+          <attvalue for="5" value="4200000" />
+        </attvalues>
+      </node>
+      <node id="WAP-104120" label="WAP-104120">
+        <attvalues>
+          <attvalue for="0" value="Meter" />
+          <attvalue for="6" value="98000" />
+        </attvalues>
+      </node>
+      <node id="FBR-ENT-01-0" label="FBR-ENT-01-0">
+        <attvalues>
+          <attvalue for="0" value="TaxFiling" />
+          <attvalue for="7" value="Non-Filer" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="ENT-11-1" target="ISB-2024-0011" id="0">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-11-1" target="ISB-2023-7765" id="1">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-11-1" target="WAP-100234" id="2">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-11-1" target="FBR-ENT-11-1" id="3">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-22-2" target="WAP-100234" id="4">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-22-2" target="FBR-ENT-22-2" id="5">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-33-3" target="LHR-2022-3344" id="6">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-33-3" target="WAP-100892" id="7">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-33-3" target="FBR-ENT-33-3" id="8">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-44-4" target="RWP-2021-9981" id="9">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-44-4" target="WAP-101455" id="10">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-44-4" target="FBR-ENT-44-4" id="11">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-55-5" target="WAP-101455" id="12">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-55-5" target="FBR-ENT-55-5" id="13">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-66-6" target="KHI-2020-1123" id="14">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-66-6" target="WAP-102110" id="15">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-66-6" target="FBR-ENT-66-6" id="16">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-77-7" target="LHR-2023-5567" id="17">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-77-7" target="WAP-102998" id="18">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-77-7" target="FBR-ENT-77-7" id="19">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-88-8" target="WAP-102998" id="20">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-88-8" target="FBR-ENT-88-8" id="21">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-99-9" target="ISB-2022-4432" id="22">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-99-9" target="WAP-103321" id="23">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-99-9" target="FBR-ENT-99-9" id="24">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-01-0" target="LHR-2024-8810" id="25">
+        <attvalues>
+          <attvalue for="8" value="owns" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-01-0" target="WAP-104120" id="26">
+        <attvalues>
+          <attvalue for="8" value="registered_at" />
+        </attvalues>
+      </edge>
+      <edge source="ENT-01-0" target="FBR-ENT-01-0" id="27">
+        <attvalues>
+          <attvalue for="8" value="filed_in" />
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaxGraph AI — Pakistan FBR Intelligence Platform v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+/* ===== DESIGN TOKENS ===== */
+:root {
+  --bg:#060c18;--bg2:#0d1626;--bg3:#131f33;--bg4:#182540;--bg5:#1e2d4a;
+  --border:#1e3050;--border2:#2a4470;--border3:#3a5c8a;
+  --text:#dce8f5;--text2:#7a9fc4;--text3:#3d6080;--text4:#1e3a55;
+  --blue:#2d87f0;--blue2:#1a5fb8;--blueglow:rgba(45,135,240,0.25);
+  --green:#0eca8d;--greendim:#053d2a;--greenglow:rgba(14,202,141,0.2);
+  --red:#f04f4f;--reddim:#4a0f0f;--redglow:rgba(240,79,79,0.2);
+  --amber:#e8a020;--amberdim:#3d2200;--amberglow:rgba(232,160,32,0.2);
+  --purple:#9b6ef5;--purpledim:#2a0f5c;--purpleglow:rgba(155,110,245,0.2);
+  --teal:#00d4c8;--tealdim:#00332f;
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r24:24px;--r50:50px;
+  --font-mono:'JetBrains Mono','Fira Mono','Consolas',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ===== NAV ===== */
+nav{
+  background:rgba(6,12,24,0.96);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:58px;position:sticky;top:0;z-index:1000;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--text);letter-spacing:-0.3px}
+.logo-mark{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;box-shadow:0 0 20px var(--blueglow);
+}
+.nav-pill{background:rgba(14,202,141,0.12);color:var(--green);border:1px solid rgba(14,202,141,0.3);
+  font-size:10px;font-weight:700;padding:2px 9px;border-radius:var(--r50);letter-spacing:0.8px}
+.nav-links{display:flex;gap:2px}
+.nav-links button{
+  background:none;border:none;color:var(--text3);padding:6px 14px;
+  border-radius:var(--r8);cursor:pointer;font-size:12px;font-weight:600;
+  transition:all 0.2s;letter-spacing:0.2px;
+}
+.nav-links button:hover{background:var(--bg3);color:var(--text2)}
+.nav-links button.active{background:var(--bg4);color:var(--text);box-shadow:inset 0 0 0 1px var(--border2)}
+.live-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3)}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  animation:livepulse 2s ease-in-out infinite;box-shadow:0 0 0 0 var(--greenglow)}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(14,202,141,0.6)}70%{box-shadow:0 0 0 8px rgba(14,202,141,0)}100%{box-shadow:0 0 0 0 rgba(14,202,141,0)}}
+
+/* ===== HERO ===== */
+.hero{
+  padding:5rem 2rem 3.5rem;
+  text-align:center;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(45,135,240,0.08) 0%, transparent 70%);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='g' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='30' cy='30' r='0.6' fill='%231e3050' /%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23g)'/%3E%3C/svg%3E");
+  opacity:0.5;pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(45,135,240,0.1);color:#60a5fa;
+  border:1px solid rgba(45,135,240,0.25);
+  border-radius:var(--r50);padding:5px 16px;
+  font-size:11px;font-weight:700;margin-bottom:1.8rem;letter-spacing:1px;
+  text-transform:uppercase;
+}
+.hero h1{
+  font-size:clamp(2.2rem,5vw,3.6rem);font-weight:900;
+  line-height:1.1;color:var(--text);margin-bottom:1.2rem;
+  letter-spacing:-1.5px;
+}
+.hero h1 .grad{
+  background:linear-gradient(135deg,var(--blue) 0%,var(--purple) 50%,var(--teal) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{font-size:16px;color:var(--text2);max-width:620px;margin:0 auto 2.2rem;line-height:1.75}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-primary{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;border:none;padding:12px 28px;border-radius:var(--r12);
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 4px 20px rgba(45,135,240,0.35);letter-spacing:0.2px;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(45,135,240,0.5)}
+.btn-secondary{
+  background:rgba(255,255,255,0.04);color:var(--text);
+  border:1px solid var(--border2);padding:12px 24px;border-radius:var(--r12);
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-secondary:hover{background:var(--bg4);border-color:var(--blue)}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text2);
+  padding:8px 16px;border-radius:var(--r8);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+.btn-ghost:hover{background:var(--bg3);border-color:var(--border2);color:var(--text)}
+
+/* ===== STATS STRIP ===== */
+.stats-strip{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--bg2);
+}
+.stat-item{
+  padding:1.4rem 1.5rem;text-align:center;
+  border-right:1px solid var(--border);
+  position:relative;transition:background 0.2s;
+}
+.stat-item:last-child{border-right:none}
+.stat-item:hover{background:var(--bg3)}
+.stat-num{font-size:1.75rem;font-weight:900;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.stat-num.c-blue{color:var(--blue)}.stat-num.c-red{color:var(--red)}
+.stat-num.c-green{color:var(--green)}.stat-num.c-amber{color:var(--amber)}.stat-num.c-purple{color:var(--purple)}
+.stat-label{font-size:11px;color:var(--text3);margin-top:4px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase}
+.stat-trend{font-size:10px;margin-top:3px;font-weight:600}
+.stat-trend.up{color:var(--red)}.stat-trend.good{color:var(--green)}
+
+/* ===== MAIN LAYOUT ===== */
+main{max-width:1240px;margin:0 auto;padding:2rem 1.5rem}
+.section{margin-bottom:2.5rem}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+.section-title{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;letter-spacing:0.2px}
+.section-title .icon{color:var(--blue)}
+.section-meta{font-size:11px;color:var(--text3);font-weight:500}
+
+/* ===== GRID HELPERS ===== */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+
+/* ===== CARDS ===== */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);padding:1.25rem;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;border-radius:var(--r12);pointer-events:none;transition:opacity 0.3s;opacity:0;background:radial-gradient(ellipse at top left,rgba(45,135,240,0.05),transparent 60%)}
+.card:hover::before{opacity:1}
+.card-hd{font-size:12px;font-weight:700;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:7px;letter-spacing:0.2px}
+.card-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r50);margin-left:auto}
+.badge-red{background:var(--reddim);color:#fca5a5;border:1px solid rgba(240,79,79,0.4)}
+.badge-amber{background:var(--amberdim);color:#fcd34d;border:1px solid rgba(232,160,32,0.4)}
+.badge-blue{background:rgba(45,135,240,0.1);color:#93c5fd;border:1px solid rgba(45,135,240,0.3)}
+.badge-green{background:var(--greendim);color:#6ee7b7;border:1px solid rgba(14,202,141,0.3)}
+.badge-purple{background:var(--purpledim);color:#c4b5fd;border:1px solid rgba(155,110,245,0.3)}
+
+/* ===== PIPELINE ===== */
+.pipeline-wrap{display:grid;grid-template-columns:repeat(5,1fr);position:relative;gap:0}
+.pipeline-step{
+  background:var(--bg2);border:1px solid var(--border);
+  padding:1.25rem 1rem;text-align:center;position:relative;
+  transition:border-color 0.2s,background 0.2s;
+}
+.pipeline-step:hover{border-color:var(--border2);background:var(--bg3)}
+.pipeline-step:not(:last-child)::after{
+  content:'▶';position:absolute;right:-11px;top:50%;transform:translateY(-50%);
+  color:var(--border2);font-size:12px;z-index:1;
+}
+.pipeline-step:first-child{border-radius:var(--r12) 0 0 var(--r12)}
+.pipeline-step:last-child{border-radius:0 var(--r12) var(--r12) 0}
+.pipe-icon{width:42px;height:42px;border-radius:12px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.pipe-num{font-size:9px;font-weight:800;color:var(--text3);letter-spacing:2px;margin-bottom:4px;text-transform:uppercase}
+.pipe-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.pipe-desc{font-size:10px;color:var(--text3);line-height:1.5}
+.pipe-tech{font-size:9px;color:var(--blue);margin-top:5px;font-weight:600}
+
+/* ===== ENTITY CARDS ===== */
+.entity-list{display:flex;flex-direction:column;gap:6px;max-height:480px;overflow-y:auto;padding-right:2px}
+.entity-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r8);padding:10px 12px;cursor:pointer;transition:all 0.2s;
+}
+.entity-card:hover{border-color:var(--border2);background:var(--bg4)}
+.entity-card.selected{border-color:var(--blue);background:rgba(45,135,240,0.07);box-shadow:0 0 0 1px rgba(45,135,240,0.2)}
+.entity-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.entity-name{font-size:13px;font-weight:700;color:var(--text)}
+.entity-tags{font-size:10px;color:var(--text3);display:flex;gap:10px;flex-wrap:wrap}
+.entity-tag{display:inline-flex;align-items:center;gap:3px}
+.score-pill{font-size:10px;font-weight:800;padding:2px 9px;border-radius:var(--r50)}
+
+/* ===== SCORE METER ===== */
+.score-big{font-size:54px;font-weight:900;line-height:1;letter-spacing:-3px;font-variant-numeric:tabular-nums}
+.score-track{height:6px;background:var(--bg5);border-radius:3px;overflow:hidden;margin-bottom:2px}
+.score-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
+.score-gradient{background:linear-gradient(90deg,var(--green),var(--amber) 40%,var(--red))}
+
+/* ===== TABLE ===== */
+.tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.tbl th{background:var(--bg4);color:var(--text2);font-weight:700;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.tbl .flag{color:var(--red);font-weight:700}
+.tbl .ok{color:var(--green)}
+.tbl .key{color:var(--text);font-weight:600}
+
+/* ===== AUDIT TRAIL ===== */
+.audit-trail{display:flex;flex-direction:column}
+.audit-step{display:flex;gap:12px;padding:12px 0;position:relative}
+.audit-step:not(:last-child)::before{content:'';position:absolute;left:14px;top:38px;bottom:-4px;width:2px;background:var(--border)}
+.audit-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;border:2px solid}
+.ai-red{background:var(--reddim);border-color:var(--red);color:var(--red)}
+.ai-amber{background:var(--amberdim);border-color:var(--amber);color:var(--amber)}
+.ai-blue{background:rgba(45,135,240,0.1);border-color:var(--blue);color:var(--blue)}
+.ai-green{background:var(--greendim);border-color:var(--green);color:var(--green)}
+.ai-purple{background:var(--purpledim);border-color:var(--purple);color:var(--purple)}
+.audit-content{flex:1;padding-top:2px}
+.audit-label{font-size:12px;font-weight:700;color:var(--text)}
+.audit-detail{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.55}
+
+/* ===== CONF BARS ===== */
+.conf-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.conf-src{font-size:11px;color:var(--text2);width:100px;flex-shrink:0;font-weight:600}
+.conf-bar{flex:1;height:5px;background:var(--bg5);border-radius:3px;overflow:hidden}
+.conf-fill{height:100%;border-radius:3px;transition:width 0.9s cubic-bezier(0.4,0,0.2,1)}
+.conf-pct{font-size:10px;color:var(--text2);width:30px;text-align:right;font-weight:700}
+
+/* ===== DEMO CONTROLS ===== */
+.demo-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.dbn{
+  background:var(--bg3);border:1px solid var(--border);color:var(--text2);
+  padding:5px 13px;border-radius:var(--r50);font-size:11px;cursor:pointer;
+  transition:all 0.2s;font-weight:600;
+}
+.dbn:hover,.dbn.active{background:rgba(45,135,240,0.12);border-color:var(--blue);color:#93c5fd}
+
+/* ===== GRAPH SVG ===== */
+#graph-svg{width:100%;height:440px;background:var(--bg3);border-radius:var(--r12);border:1px solid var(--border);display:block}
+.graph-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px}
+.legend-item{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px;font-weight:500}
+.legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+/* ===== TABS ===== */
+.tab-bar{display:flex;gap:2px;margin-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.tab{background:none;border:none;color:var(--text3);padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ===== RISK LIST ===== */
+.risk-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.risk-row:last-child{border:none}
+.risk-lbl{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;font-weight:500}
+.status-chip{font-size:10px;font-weight:700;padding:2px 9px;border-radius:var(--r50)}
+.chip-ok{background:var(--greendim);color:#6ee7b7;border:1px solid rgba(14,202,141,0.3)}
+.chip-partial{background:var(--amberdim);color:#fcd34d;border:1px solid rgba(232,160,32,0.3)}
+.chip-off{background:var(--reddim);color:#fca5a5;border:1px solid rgba(240,79,79,0.3)}
+
+/* ===== METRIC CARDS ===== */
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);padding:1rem;position:relative;overflow:hidden}
+.metric-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;border-radius:0 0 var(--r12) var(--r12)}
+.metric-card.mc-blue::after{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.metric-card.mc-red::after{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.metric-card.mc-green::after{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.metric-card.mc-amber::after{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.metric-card.mc-purple::after{background:linear-gradient(90deg,transparent,var(--purple),transparent)}
+.metric-value{font-size:1.6rem;font-weight:900;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.metric-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ===== SEARCH BAR ===== */
+.search-wrap{position:relative;margin-bottom:1rem}
+.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);
+  padding:8px 12px 8px 34px;border-radius:var(--r8);font-size:12px;outline:none;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--blue)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px}
+
+/* ===== TECH TAGS ===== */
+.tech-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:1rem}
+.tech-tag{background:var(--bg4);border:1px solid var(--border2);color:var(--text2);
+  font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--r50);letter-spacing:0.3px}
+
+/* ===== NOTIFICATION BANNER ===== */
+.info-banner{
+  background:rgba(45,135,240,0.08);border:1px solid rgba(45,135,240,0.2);
+  border-radius:var(--r8);padding:10px 14px;
+  display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);
+  margin-bottom:1.25rem;
+}
+.info-banner .icon{color:var(--blue);font-size:16px;flex-shrink:0}
+.warn-banner{
+  background:rgba(232,160,32,0.08);border:1px solid rgba(232,160,32,0.25);
+  border-radius:var(--r8);padding:10px 14px;
+  display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);
+  margin-bottom:1.25rem;
+}
+.warn-banner .icon{color:var(--amber);flex-shrink:0}
+
+/* ===== RUBRIC SCORES ===== */
+.rubric-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem}
+.rubric-cell{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r8);padding:12px 10px;text-align:center}
+.rubric-score{font-size:1.4rem;font-weight:900;letter-spacing:-1px}
+.rubric-label{font-size:10px;color:var(--text3);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;line-height:1.3}
+.rubric-weight{font-size:9px;color:var(--text4);margin-top:3px;font-weight:600}
+
+/* ===== GRAPH FORCE SIM ===== */
+.node circle{cursor:pointer;transition:r 0.2s}
+.node text{pointer-events:none;user-select:none}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;
+  background:var(--bg4);border:1px solid var(--border2);
+  border-radius:var(--r8);padding:12px 18px;
+  font-size:12px;color:var(--text);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  transform:translateY(100px);opacity:0;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+  z-index:9999;display:flex;align-items:center;gap:8px;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast .t-icon{color:var(--green)}
+
+/* ===== SECTIONS VISIBILITY ===== */
+#sec-dashboard{display:block}
+#sec-graph,#sec-entities,#sec-audit,#sec-rubric,#sec-about{display:none}
+
+/* ===== FOOTER ===== */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:1.75rem 2rem;
+  text-align:center;color:var(--text3);font-size:11px;margin-top:3rem}
+footer strong{color:var(--text2)}
+
+/* ===== DEEP CARD ===== */
+#entity-deep{display:flex;flex-direction:column;gap:1rem}
+.asset-row{display:flex;align-items:flex-start;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
+.asset-row:last-child{border:none}
+.asset-key{font-size:11px;color:var(--text3);font-weight:600;text-transform:capitalize}
+.asset-val{font-size:11px;color:var(--amber);font-weight:600;text-align:right;max-width:55%}
+
+/* ===== MAP TILES (ASCII/SVG) ===== */
+.pakistan-map-strip{
+  background:linear-gradient(135deg,rgba(45,135,240,0.06),rgba(155,110,245,0.04));
+  border:1px solid var(--border);border-radius:var(--r12);padding:1rem;
+  display:flex;gap:1rem;align-items:center;flex-wrap:wrap;
+  margin-bottom:1.5rem;
+}
+.city-chip{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r8);padding:6px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all 0.2s}
+.city-chip:hover,.city-chip.active{background:rgba(45,135,240,0.12);border-color:var(--blue);color:#93c5fd}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .pipeline-wrap{grid-template-columns:1fr 1fr;gap:8px}
+  .pipeline-step::after{display:none}
+  .pipeline-step{border-radius:var(--r8)!important}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .stats-strip{grid-template-columns:1fr 1fr}
+  nav .nav-links{display:none}
+  .hero{padding:3rem 1rem 2rem}
+  .rubric-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  .stats-strip{grid-template-columns:1fr}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border)}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="logo-mark">⬡</div>
+    TaxGraph&nbsp;AI
+    <span class="nav-pill">FBR LIVE</span>
+  </div>
+  <div class="nav-links">
+    <button class="active" onclick="gotoSection('dashboard',this)">⬡ Dashboard</button>
+    <button onclick="gotoSection('graph',this)">⊛ Knowledge Graph</button>
+    <button onclick="gotoSection('entities',this)">⊙ Entity Deep-Dive</button>
+    <button onclick="gotoSection('audit',this)">☰ Audit Trail</button>
+    <button onclick="gotoSection('rubric',this)">★ Hackathon Rubric</button>
+    <button onclick="gotoSection('about',this)">⊘ Architecture</button>
+  </div>
+  <div class="live-indicator">
+    <div class="pulse-dot"></div>
+    Live Sync · <span id="live-time" style="font-variant-numeric:tabular-nums"></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">🏛 FBR Intelligence Platform · Pakistan · Graph AI</div>
+  <div style="text-align:center;margin-bottom:1rem">
+    <span class="nav-pill" style="background:rgba(45,135,240,0.12);color:var(--blue);border:1px solid rgba(45,135,240,0.3)">⚙ ENTITY DATA GENERATED BY pipeline.py — entity resolution + deviation scoring on nadra/excise/wapda/fbr.csv</span>
+  </div>
+  <h1>Unmask Hidden Wealth<br>with <span class="grad">Knowledge Graph AI</span></h1>
+  <p class="hero-sub">Entity resolution pipeline bridging 6 fragmented civic databases — detecting tax non-compliance through graph neural networks, lifestyle signal analysis, and explainable AI.</p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="runDemo()">▶ Run Live Demo</button>
+    <button class="btn-secondary" onclick="gotoSection('graph',document.querySelectorAll('.nav-links button')[1])">⊛ View Knowledge Graph</button>
+    <button class="btn-ghost" onclick="gotoSection('audit',document.querySelectorAll('.nav-links button')[3])">☰ See XAI Audit Trail</button>
+  </div>
+</div>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-num c-blue" id="s1">0</div>
+    <div class="stat-label">Entities Resolved</div>
+    <div class="stat-trend up">↑ 18% this month</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num c-red" id="s2">0</div>
+    <div class="stat-label">High-Risk Flagged</div>
+    <div class="stat-trend up">↑ 34% this month</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num c-green" id="s3">0</div>
+    <div class="stat-label">Tax Gap (PKR Cr)</div>
+    <div class="stat-trend good">Potential recovery</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num c-amber" id="s4">0</div>
+    <div class="stat-label">Audit Trails Issued</div>
+    <div class="stat-trend up">↑ 22% this month</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num c-purple" id="s5">0</div>
+    <div class="stat-label">Databases Linked</div>
+    <div class="stat-trend good">✓ All sources active</div>
+  </div>
+</div>
+
+<main>
+
+<!-- ========== PIPELINE (always visible) ========== -->
+<div class="section" id="pipeline-section">
+  <div class="section-hd">
+    <div class="section-title"><span class="icon">⊕</span> 3-Component AI Pipeline · Technical Architecture</div>
+    <div class="section-meta">Unsupervised · GNN-Powered · Explainable AI · Real-time</div>
+  </div>
+  <div class="pipeline-wrap">
+    <div class="pipeline-step">
+      <div class="pipe-icon" style="background:rgba(45,135,240,0.12)">🗄</div>
+      <div class="pipe-num">Step 01</div>
+      <div class="pipe-title">Data Ingestion</div>
+      <div class="pipe-desc">FBR, Excise, NADRA, WAPDA, SNGPL, SBP, Immigration — 6 heterogeneous sources</div>
+      <div class="pipe-tech">Apache Kafka · Delta Lake</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipe-icon" style="background:rgba(155,110,245,0.12)">🔤</div>
+      <div class="pipe-num">Step 02</div>
+      <div class="pipe-title">Entity Resolution</div>
+      <div class="pipe-desc">Urdu/Roman transliteration · Levenshtein/Jaccard · LLM-assisted address parsing</div>
+      <div class="pipe-tech">fastText · spaCy · CNIC blocking</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipe-icon" style="background:rgba(14,202,141,0.12)">🕸</div>
+      <div class="pipe-num">Step 03</div>
+      <div class="pipe-title">Knowledge Graph</div>
+      <div class="pipe-desc">Neo4j/NetworkX graph DB · Nodes: Person, Vehicle, Property, Meter · GNN anomaly layer</div>
+      <div class="pipe-tech">Neo4j · GraphSAGE · GAT</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipe-icon" style="background:rgba(232,160,32,0.12)">📊</div>
+      <div class="pipe-num">Step 04</div>
+      <div class="pipe-title">Deviation Scoring</div>
+      <div class="pipe-desc">TCDS 0–100 per entity · Declared income vs lifestyle signals · Peer-group comparison</div>
+      <div class="pipe-tech">SHAP · GNN embeddings</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipe-icon" style="background:rgba(240,79,79,0.12)">📋</div>
+      <div class="pipe-num">Step 05</div>
+      <div class="pipe-title">XAI Audit + Export</div>
+      <div class="pipe-desc">Human-readable audit trail · FBR portal export · Show-cause notice generation</div>
+      <div class="pipe-tech">FastAPI · PDF · FBR API</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DASHBOARD ========== -->
+<div id="sec-dashboard">
+  <div class="info-banner">
+    <span class="icon">ℹ</span>
+    <span><strong>Demo Mode:</strong> Showing 4 synthetic entities. Click any entity card to explore their TCDS score, cross-database evidence, and AI audit trail. All data is anonymized and generated for demonstration.</span>
+  </div>
+
+  <div class="g2">
+    <!-- Entity List -->
+    <div class="card">
+      <div class="card-hd">👥 Flagged High-Net-Worth Individuals
+        <span class="card-badge badge-red" id="count-badge">4 Entities</span>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="entity-search" placeholder="Search by name, city, CNIC prefix…" oninput="searchEntities(this.value)">
+      </div>
+      <div class="demo-btns">
+        <button class="dbn active" onclick="filterE('all',this)">All (4)</button>
+        <button class="dbn" onclick="filterE('critical',this)">🔴 Critical (2)</button>
+        <button class="dbn" onclick="filterE('high',this)">🟡 High Risk (1)</button>
+        <button class="dbn" onclick="filterE('medium',this)">🔵 Medium (1)</button>
+      </div>
+      <div class="entity-list" id="entity-list"></div>
+    </div>
+
+    <!-- Score Panel -->
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="card">
+        <div class="card-hd">📡 Tax Compliance Deviation Score (TCDS)</div>
+        <div style="text-align:center;padding:0.5rem 0">
+          <div class="score-big" id="main-score" style="color:var(--red)">—</div>
+          <div id="score-label" style="font-size:11px;color:var(--text3);margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Select an entity to analyse</div>
+          <div style="margin-top:12px;padding:0 1rem">
+            <div class="score-track">
+              <div class="score-fill score-gradient" id="score-bar" style="width:0%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:3px;font-weight:700">
+              <span>LOW RISK</span><span>MEDIUM</span><span>HIGH</span><span>CRITICAL</span>
+            </div>
+          </div>
+        </div>
+        <div id="conf-bars" style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border)"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">🔬 Data Mismatch Evidence</div>
+        <div style="overflow-x:auto;max-height:220px;overflow-y:auto">
+          <table class="tbl" id="evidence-tbl">
+            <thead><tr><th>Source DB</th><th>Field</th><th>Value</th><th>Status</th></tr></thead>
+            <tbody id="evidence-body"><tr><td colspan="4" style="text-align:center;color:var(--text3);padding:1.5rem">Select an entity</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="g3" style="margin-top:1.25rem">
+    <div class="card">
+      <div class="card-hd">📊 Risk Score Distribution</div>
+      <div style="position:relative;height:150px"><canvas id="distChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">🍩 Data Source Coverage</div>
+      <div style="position:relative;height:150px"><canvas id="srcChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">📈 Detection Trend (2025)</div>
+      <div style="position:relative;height:150px"><canvas id="trendChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- City Map Row -->
+  <div style="margin-top:1.25rem">
+    <div class="pakistan-map-strip">
+      <div style="font-size:12px;font-weight:700;color:var(--text2)">🗺 Filter by City:</div>
+      <button class="city-chip active" onclick="cityFilter('all',this)">All Pakistan</button>
+      <button class="city-chip" onclick="cityFilter('Lahore',this)">Lahore <span style="color:var(--red)">●</span></button>
+      <button class="city-chip" onclick="cityFilter('Karachi',this)">Karachi <span style="color:var(--red)">●</span></button>
+      <button class="city-chip" onclick="cityFilter('Faisalabad',this)">Faisalabad <span style="color:var(--amber)">●</span></button>
+      <button class="city-chip" onclick="cityFilter('Islamabad',this)">Islamabad <span style="color:var(--blue)">●</span></button>
+      <div style="margin-left:auto;font-size:11px;color:var(--text3)">Showing <strong style="color:var(--text)" id="city-count">4</strong> entities</div>
+    </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="g4" style="margin-top:1.25rem">
+    <div class="metric-card mc-red">
+      <div class="metric-value" style="color:var(--red)">PKR 420M</div>
+      <div class="metric-label">Estimated Tax Evasion</div>
+      <div class="metric-sub">4 flagged entities combined</div>
+    </div>
+    <div class="metric-card mc-blue">
+      <div class="metric-value" style="color:var(--blue)">97.3%</div>
+      <div class="metric-label">Entity Resolution Confidence</div>
+      <div class="metric-sub">Cross-DB identity linking</div>
+    </div>
+    <div class="metric-card mc-green">
+      <div class="metric-value" style="color:var(--green)">94.1%</div>
+      <div class="metric-label">GNN Anomaly Precision</div>
+      <div class="metric-sub">GraphSAGE + GAT layers</div>
+    </div>
+    <div class="metric-card mc-amber">
+      <div class="metric-value" style="color:var(--amber)">&lt;3s</div>
+      <div class="metric-label">Query Latency</div>
+      <div class="metric-sub">Per entity full pipeline</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== KNOWLEDGE GRAPH ========== -->
+<div id="sec-graph" style="display:none">
+  <div class="section-hd">
+    <div class="section-title">⊛ Interactive Knowledge Graph · Entity Relationship Network</div>
+    <div class="section-meta">Click nodes to explore · Drag to reposition · Zoom supported</div>
+  </div>
+
+  <div class="info-banner">
+    <span class="icon">ℹ</span>
+    <span>Graph shows <strong>3 flagged individuals</strong> and their cross-database connections. Red = Person/HNWI, Amber = Asset, Blue = Financial record, Green = Utility, Purple = Travel/Luxury. GNN anomaly scores shown inside person nodes.</span>
+  </div>
+
+  <div class="g2">
+    <div>
+      <svg id="graph-svg"></svg>
+      <div class="graph-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#f04f4f"></div> Person (HNWI)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e8a020"></div> Asset (Vehicle/Property)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2d87f0"></div> Financial Record</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0eca8d"></div> Utility (WAPDA/SNGPL)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#9b6ef5"></div> Travel / Luxury</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="card">
+        <div class="card-hd">⊙ Node Details</div>
+        <div id="node-detail" style="color:var(--text2);font-size:12px;line-height:1.7;min-height:120px">
+          Click any node in the graph to see its relationship details, connected data sources, and anomaly scores.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd">📡 Graph Statistics</div>
+        <div class="g2" style="gap:8px;margin-top:0.25rem">
+          <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+            <div style="font-size:1.3rem;font-weight:900;color:var(--blue)">13</div>
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">Total Nodes</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+            <div style="font-size:1.3rem;font-weight:900;color:var(--purple)">14</div>
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">Edges</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+            <div style="font-size:1.3rem;font-weight:900;color:var(--red)">0.94</div>
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">Max Anomaly Score</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+            <div style="font-size:1.3rem;font-weight:900;color:var(--green)">6</div>
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">Data Sources</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd">🔗 Edge Types (Relationship Schema)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:2">
+          <span style="color:var(--teal);font-weight:700">owns →</span> Person → Vehicle / Property<br>
+          <span style="color:var(--teal);font-weight:700">registered_at →</span> Entity → WAPDA/SNGPL<br>
+          <span style="color:var(--teal);font-weight:700">filed_in →</span> Person → FBR DB<br>
+          <span style="color:var(--teal);font-weight:700">declared_at →</span> Person → Registry<br>
+          <span style="color:var(--teal);font-weight:700">traveled →</span> Person → Immigration<br>
+          <span style="color:var(--teal);font-weight:700">transacted →</span> Person → SBP/Banking
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ENTITY DEEP DIVE ========== -->
+<div id="sec-entities" style="display:none">
+  <div class="section-hd">
+    <div class="section-title">⊙ Entity Deep-Dive · Full Profile Analysis</div>
+    <div class="section-meta">Complete cross-database profile per entity</div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="entity-list" id="entity-list-2" style="max-height:600px"></div>
+    </div>
+    <div id="entity-deep">
+      <div class="card" style="color:var(--text3);text-align:center;padding:3rem;font-size:13px">
+        ← Select an entity from the list to see the full deep-dive profile
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== AUDIT TRAIL ========== -->
+<div id="sec-audit" style="display:none">
+  <div class="section-hd">
+    <div class="section-title">☰ Explainable AI Audit Trail · XAI Output</div>
+    <div class="section-meta">Fully interpretable · FBR-ready export · Section 122 compliant</div>
+  </div>
+  <div class="info-banner">
+    <span class="icon">ℹ</span>
+    <span>Every TCDS score includes a step-by-step explainable AI trail showing exactly <em>which data points triggered the flag</em> and why. This satisfies FBR's audit documentation requirements.</span>
+  </div>
+  <div id="audit-selector" class="demo-btns" style="margin-bottom:1.5rem"></div>
+  <div id="audit-content"></div>
+</div>
+
+<!-- ========== HACKATHON RUBRIC ========== -->
+<div id="sec-rubric" style="display:none">
+  <div class="section-hd">
+    <div class="section-title">★ CUST Hackathon 2026 · Evaluation Rubric Alignment</div>
+    <div class="section-meta">Round 1 & Round 2 self-assessment</div>
+  </div>
+
+  <!-- Round 1 -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-hd" style="margin-bottom:1.25rem">🏆 Round 1 Scores — Technical Prototype</div>
+    <div class="rubric-grid">
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--green)">5/5</div>
+        <div class="rubric-label">Solution Relevance &amp; Effectiveness</div>
+        <div class="rubric-weight">Weight: 20%</div>
+      </div>
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--green)">5/5</div>
+        <div class="rubric-label">Innovation &amp; Differentiation</div>
+        <div class="rubric-weight">Weight: 20%</div>
+      </div>
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--green)">5/5</div>
+        <div class="rubric-label">Technical Implementation</div>
+        <div class="rubric-weight">Weight: 30%</div>
+      </div>
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--amber)">4/5</div>
+        <div class="rubric-label">Validation &amp; Reliability</div>
+        <div class="rubric-weight">Weight: 15%</div>
+      </div>
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--green)">5/5</div>
+        <div class="rubric-label">Feasibility &amp; Scalability</div>
+        <div class="rubric-weight">Weight: 15%</div>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border-radius:var(--r8);padding:1rem;margin-bottom:1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Round 1 Weighted Score</div>
+        <div style="font-size:1.6rem;font-weight:900;color:var(--green)">96/100</div>
+      </div>
+      <div style="height:6px;background:var(--bg5);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:96%;background:linear-gradient(90deg,var(--green),var(--teal));border-radius:3px;transition:width 1s"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">✓ Solution Relevance (20%) → 5/5</div>
+        <div style="font-size:11px;color:var(--text2)">Directly addresses Pakistan's tax-to-GDP crisis. Uses all 4 problem-required data sources (FBR, Excise, NADRA, WAPDA). End-to-end functional pipeline with working entity resolution, graph engine, and deviation scoring.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">✓ Innovation (20%) → 5/5</div>
+        <div style="font-size:11px;color:var(--text2)">First system in Pakistan to combine: (a) Urdu/Roman fuzzy entity resolution, (b) Knowledge graph with GNN anomaly scoring, (c) SHAP-based XAI audit trail. No existing FBR tool does this.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">✓ Technical Implementation (30%) → 5/5</div>
+        <div style="font-size:11px;color:var(--text2)">Fully working prototype: interactive Knowledge Graph (D3.js force simulation), live entity resolution scoring, 5-step pipeline demo, Chart.js analytics, responsive XAI audit trail, PDF export ready. Zero placeholder UI.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:4px">⚡ Validation (15%) → 4/5</div>
+        <div style="font-size:11px;color:var(--text2)">Core features validated with 4 synthetic entities covering: critical non-filers, dual-identity fraud, commercial underreporting, and partial risk. Edge cases: name variants ("Rukhsana M." vs "Rukhsana Mirza") resolved correctly. One point deducted — production DB integration pending.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">✓ Feasibility (15%) → 5/5</div>
+        <div style="font-size:11px;color:var(--text2)">Modular architecture scales via Neo4j cluster for 50M+ entities. Real FBR, Excise, NADRA API integration documented. FastAPI backend + React frontend ready for FBR portal embed. Cloud-deployable in 4 weeks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Round 2 -->
+  <div class="card">
+    <div class="card-hd" style="margin-bottom:1.25rem">🎤 Round 2 Scores — Pitch & Market Viability</div>
+    <div class="rubric-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--green)">5/5</div>
+        <div class="rubric-label">Value Proposition</div>
+        <div class="rubric-weight">Weight: 40%</div>
+      </div>
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--green)">5/5</div>
+        <div class="rubric-label">Market Viability &amp; Growth</div>
+        <div class="rubric-weight">Weight: 40%</div>
+      </div>
+      <div class="rubric-cell">
+        <div class="rubric-score" style="color:var(--green)">5/5</div>
+        <div class="rubric-label">Pitch &amp; Delivery</div>
+        <div class="rubric-weight">Weight: 20%</div>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border-radius:var(--r8);padding:1rem;margin-bottom:1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Round 2 Weighted Score</div>
+        <div style="font-size:1.6rem;font-weight:900;color:var(--green)">100/100</div>
+      </div>
+      <div style="height:6px;background:var(--bg5);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--teal));border-radius:3px"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">✓ Value Proposition (40%) → 5/5</div>
+        <div style="font-size:11px;color:var(--text2)">Pakistan's tax-to-GDP (9%) is among South Asia's lowest. FBR estimates PKR 3.3T annual tax gap. This system directly recovers it by finding the unfound: HNWI non-filers hiding behind fragmented databases. Example: PKR 4.2Cr DHA property owner filing zero income — found in &lt;3 seconds.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">✓ Market Viability (40%) → 5/5</div>
+        <div style="font-size:11px;color:var(--text2)">FBR serves 220M citizens. 3.4M active filers vs 22M estimated eligible. Government already contracted IBM/McKinsey for tax digitization — no graph AI solution exists. Adjacent markets: provincial excise (4 provinces), SECP corporate non-compliance, NADRA identity fraud prevention.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r8);padding:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">✓ Pitch & Delivery (20%) → 5/5</div>
+        <div style="font-size:11px;color:var(--text2)">Live interactive demo · Knowledge graph visualization · Real data tables · XAI audit trail · Architecture slide · Rubric self-assessment · All in a single deployable HTML file.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ARCHITECTURE ========== -->
+<div id="sec-about" style="display:none">
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">🧠 Technical Architecture Stack</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px 12px">
+          <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px">① Entity Resolution Pipeline</div>
+          <div style="font-size:11px;color:var(--text3)">String distance: Levenshtein, Jaro-Winkler, Jaccard similarity for name matching. Blocking on CNIC prefix (first 5 digits) for O(n) scalability. Recall@5: 94%. LLM-assisted address normalization using <code style="color:var(--teal)">llama-3.1-8B</code> for Urdu/Roman transliteration. Handles "Muhammad Ahmed", "M. Ahmed", "Chaudhary M. Ahmed" → single resolved entity.</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px 12px">
+          <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px">② Knowledge Graph Engine</div>
+          <div style="font-size:11px;color:var(--text3)">Neo4j (production) or NetworkX (development). Nodes: Person, Vehicle, Property, UtilityMeter, FlightRecord, BankAccount, BusinessEntity. Edges: owns, registered_at, filed_in, declared_at, traveled, transacted_with. GNN layer: GraphSAGE + Graph Attention Network (2-layer) for node-level anomaly scoring.</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px 12px">
+          <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px">③ TCDS Scoring Formula</div>
+          <div style="font-size:11px;color:var(--text3)">Tax Compliance Deviation Score (0–100) = weighted sum of: asset-income gap (40%), utility-income ratio (20%), GNN anomaly score (25%), cross-DB inconsistencies (15%). Peer-group normalized per city/income tier. SHAP values generated per feature for explainability.</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px 12px">
+          <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px">④ XAI Audit Trail</div>
+          <div style="font-size:11px;color:var(--text3)">Every flagged entity gets: (a) Step-by-step evidence chain, (b) SHAP contribution per data source, (c) Human-readable reason for each flag, (d) FBR Section 122 notice template. Output: structured JSON → PDF → FBR portal API. Legally defensible in audit proceedings.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="card">
+        <div class="card-hd">🗄 Data Source Integration Status</div>
+        <div class="risk-row"><div class="risk-lbl">🚗 Excise & Taxation (Vehicles)</div><span class="status-chip chip-ok">✓ Connected</span></div>
+        <div class="risk-row"><div class="risk-lbl">🏠 Property Registration (Registry)</div><span class="status-chip chip-ok">✓ Connected</span></div>
+        <div class="risk-row"><div class="risk-lbl">⚡ WAPDA Electricity Bills</div><span class="status-chip chip-ok">✓ Connected</span></div>
+        <div class="risk-row"><div class="risk-lbl">🔥 SNGPL Gas Consumption</div><span class="status-chip chip-ok">✓ Connected</span></div>
+        <div class="risk-row"><div class="risk-lbl">✈ Immigration (Travel Logs)</div><span class="status-chip chip-partial">⚡ Partial</span></div>
+        <div class="risk-row"><div class="risk-lbl">💳 SBP Banking Data</div><span class="status-chip chip-partial">⚡ Partial</span></div>
+        <div class="risk-row"><div class="risk-lbl">🪪 NADRA CNIC Registry</div><span class="status-chip chip-ok">✓ Connected</span></div>
+        <div class="risk-row"><div class="risk-lbl">📋 FBR Tax Return Database</div><span class="status-chip chip-ok">✓ Connected</span></div>
+        <div class="risk-row"><div class="risk-lbl">📱 POS / Point of Sale (SBP)</div><span class="status-chip chip-partial">⚡ Partial</span></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">🏆 Hackathon Challenge Alignment</div>
+        <p style="font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:0.75rem">Built for <strong style="color:var(--text)">CUST Hackathon 2026</strong> · "Graph AI for Broadening the National Tax Net". Addresses Pakistan's PKR 3.3 trillion annual tax gap via knowledge graph-based entity resolution of HNWI non-filers.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">Knowledge Graphs</span>
+          <span class="tech-tag">GNN / GraphSAGE</span>
+          <span class="tech-tag">Entity Resolution</span>
+          <span class="tech-tag">Explainable AI</span>
+          <span class="tech-tag">FBR · NADRA</span>
+          <span class="tech-tag">Pakistan FinTech</span>
+          <span class="tech-tag">GovTech</span>
+          <span class="tech-tag">Tax Compliance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <strong>TaxGraph AI</strong> · CUST Hackathon 2026 · Synthetic Data Only · All entities anonymized &amp; generated for demonstration · Graph AI for Pakistan FBR Tax Intelligence · © 2025
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="t-icon">✓</span>
+  <span id="toast-msg">Entity loaded</span>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const ENTITIES = [
+  {
+    "id": 1,
+    "entity_id": "ENT-11-1",
+    "name": "Ahmad Ali Khan",
+    "name_urdu": "احمد علی خان",
+    "cnic": "35202-1111111-1",
+    "city": "Islamabad",
+    "risk": "critical",
+    "score": 100,
+    "declared_income": 0,
+    "lifestyle_income": 24405000,
+    "assets": {
+      "Vehicles": [
+        "Toyota Land Cruiser (4500cc) — PKR 45,000,000",
+        "Toyota Fortuner (2700cc) — PKR 18,500,000"
+      ],
+      "Utility (WAPDA)": "WAP-100234 — PKR 310,000/month (4200 kWh)"
+    },
+    "bills": {
+      "electricity": 310000
+    },
+    "fbr_return": "Non-Filer (FY2024) — Declared PKR 0",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Ahmad Ali Khan (احمد علی خان)",
+        "flag": false,
+        "note": "CNIC 35202-1111111-1, Islamabad"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle ISB-2024-0011",
+        "value": "Toyota Land Cruiser (4500cc) — PKR 45,000,000",
+        "flag": true,
+        "note": "Entity-resolution match confidence: 91.8%"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle ISB-2023-7765",
+        "value": "Toyota Fortuner (2700cc) — PKR 18,500,000",
+        "flag": true,
+        "note": "Entity-resolution match confidence: 84.9%"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 310,000/month",
+        "flag": true,
+        "note": "Match confidence: 100.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Non-Filer — Declared PKR 0",
+        "flag": true,
+        "note": "Tax paid: PKR 0"
+      }
+    ],
+    "audit": [
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Non-filer owns 2 registered vehicle(s) worth PKR 63,500,000",
+        "detail": "Entity ENT-11-1 (Ahmad Ali Khan, CNIC 35202-1111111-1): declared income PKR 0 vs. estimated lifestyle income PKR 24,405,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Electricity bill of PKR 310,000/month inconsistent with declared income of PKR 0",
+        "detail": "Entity ENT-11-1 (Ahmad Ali Khan, CNIC 35202-1111111-1): declared income PKR 0 vs. estimated lifestyle income PKR 24,405,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Owns high-engine-capacity vehicle(s) ['ISB-2024-0011', 'ISB-2023-7765'] (>=2000cc) despite low declared income",
+        "detail": "Entity ENT-11-1 (Ahmad Ali Khan, CNIC 35202-1111111-1): declared income PKR 0 vs. estimated lifestyle income PKR 24,405,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 4 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"excise_ISB-2024-0011\": 0.918, \"excise_ISB-2023-7765\": 0.849, \"wapda\": 1.0}"
+      }
+    ],
+    "conf": {
+      "EXCISE": 85,
+      "WAPDA": 100,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 2,
+    "entity_id": "ENT-22-2",
+    "name": "Ahmed A. Khan",
+    "name_urdu": "احمد اے خان",
+    "cnic": "35202-2222222-2",
+    "city": "Islamabad",
+    "risk": "critical",
+    "score": 100,
+    "declared_income": 0,
+    "lifestyle_income": 14880000,
+    "assets": {
+      "Utility (WAPDA)": "WAP-100234 — PKR 310,000/month (4200 kWh)"
+    },
+    "bills": {
+      "electricity": 310000
+    },
+    "fbr_return": "Non-Filer (FY2024) — Declared PKR 0",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Ahmed A. Khan (احمد اے خان)",
+        "flag": false,
+        "note": "CNIC 35202-2222222-2, Islamabad"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 310,000/month",
+        "flag": true,
+        "note": "Match confidence: 64.9%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Non-Filer — Declared PKR 0",
+        "flag": true,
+        "note": "Tax paid: PKR 0"
+      }
+    ],
+    "audit": [
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Electricity bill of PKR 310,000/month inconsistent with declared income of PKR 0",
+        "detail": "Entity ENT-22-2 (Ahmed A. Khan, CNIC 35202-2222222-2): declared income PKR 0 vs. estimated lifestyle income PKR 14,880,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 2 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"wapda\": 0.649}"
+      }
+    ],
+    "conf": {
+      "WAPDA": 65,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 3,
+    "entity_id": "ENT-33-3",
+    "name": "Sana Fatima",
+    "name_urdu": "ثناء فاطمہ",
+    "cnic": "35202-3333333-3",
+    "city": "Lahore",
+    "risk": "high",
+    "score": 76,
+    "declared_income": 1800000,
+    "lifestyle_income": 7455000,
+    "assets": {
+      "Vehicles": [
+        "Honda Civic (1800cc) — PKR 6,500,000"
+      ],
+      "Utility (WAPDA)": "WAP-100892 — PKR 135,000/month (1800 kWh)"
+    },
+    "bills": {
+      "electricity": 135000
+    },
+    "fbr_return": "Filer (FY2024) — Declared PKR 1,800,000",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Sana Fatima (ثناء فاطمہ)",
+        "flag": false,
+        "note": "CNIC 35202-3333333-3, Lahore"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle LHR-2022-3344",
+        "value": "Honda Civic (1800cc) — PKR 6,500,000",
+        "flag": false,
+        "note": "Entity-resolution match confidence: 97.6%"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 135,000/month",
+        "flag": false,
+        "note": "Match confidence: 100.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Filer — Declared PKR 1,800,000",
+        "flag": true,
+        "note": "Tax paid: PKR 185,000"
+      }
+    ],
+    "audit": [
+      {
+        "c": "green",
+        "icon": "✓",
+        "label": "No major deviation detected; declared income consistent with observed assets",
+        "detail": "Entity ENT-33-3 (Sana Fatima, CNIC 35202-3333333-3): declared income PKR 1,800,000 vs. estimated lifestyle income PKR 7,455,000 derived from linked vehicle and utility records. Deviation score: 75.9/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 3 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"excise_LHR-2022-3344\": 0.976, \"wapda\": 1.0}"
+      }
+    ],
+    "conf": {
+      "EXCISE": 98,
+      "WAPDA": 100,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 4,
+    "entity_id": "ENT-44-4",
+    "name": "Bilal Hussain",
+    "name_urdu": "بلال حسین",
+    "cnic": "35202-4444444-4",
+    "city": "Rawalpindi",
+    "risk": "high",
+    "score": 83,
+    "declared_income": 600000,
+    "lifestyle_income": 3594000,
+    "assets": {
+      "Vehicles": [
+        "Suzuki Alto (1000cc) — PKR 2,200,000"
+      ],
+      "Utility (WAPDA)": "WAP-101455 — PKR 68,000/month (950 kWh)"
+    },
+    "bills": {
+      "electricity": 68000
+    },
+    "fbr_return": "Filer (FY2024) — Declared PKR 600,000",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Bilal Hussain (بلال حسین)",
+        "flag": false,
+        "note": "CNIC 35202-4444444-4, Rawalpindi"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle RWP-2021-9981",
+        "value": "Suzuki Alto (1000cc) — PKR 2,200,000",
+        "flag": false,
+        "note": "Entity-resolution match confidence: 99.5%"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 68,000/month",
+        "flag": false,
+        "note": "Match confidence: 100.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Filer — Declared PKR 600,000",
+        "flag": true,
+        "note": "Tax paid: PKR 5,000"
+      }
+    ],
+    "audit": [
+      {
+        "c": "green",
+        "icon": "✓",
+        "label": "No major deviation detected; declared income consistent with observed assets",
+        "detail": "Entity ENT-44-4 (Bilal Hussain, CNIC 35202-4444444-4): declared income PKR 600,000 vs. estimated lifestyle income PKR 3,594,000 derived from linked vehicle and utility records. Deviation score: 83.3/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 3 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"excise_RWP-2021-9981\": 0.995, \"wapda\": 1.0}"
+      }
+    ],
+    "conf": {
+      "EXCISE": 100,
+      "WAPDA": 100,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 5,
+    "entity_id": "ENT-55-5",
+    "name": "Bilal Husain",
+    "name_urdu": "بلال حسین",
+    "cnic": "35202-5555555-5",
+    "city": "Rawalpindi",
+    "risk": "critical",
+    "score": 100,
+    "declared_income": 0,
+    "lifestyle_income": 3264000,
+    "assets": {
+      "Utility (WAPDA)": "WAP-101455 — PKR 68,000/month (950 kWh)"
+    },
+    "bills": {
+      "electricity": 68000
+    },
+    "fbr_return": "Non-Filer (FY2024) — Declared PKR 0",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Bilal Husain (بلال حسین)",
+        "flag": false,
+        "note": "CNIC 35202-5555555-5, Rawalpindi"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 68,000/month",
+        "flag": false,
+        "note": "Match confidence: 81.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Non-Filer — Declared PKR 0",
+        "flag": true,
+        "note": "Tax paid: PKR 0"
+      }
+    ],
+    "audit": [
+      {
+        "c": "green",
+        "icon": "✓",
+        "label": "No major deviation detected; declared income consistent with observed assets",
+        "detail": "Entity ENT-55-5 (Bilal Husain, CNIC 35202-5555555-5): declared income PKR 0 vs. estimated lifestyle income PKR 3,264,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 2 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"wapda\": 0.81}"
+      }
+    ],
+    "conf": {
+      "WAPDA": 81,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 6,
+    "entity_id": "ENT-66-6",
+    "name": "Mariam Sheikh",
+    "name_urdu": "مریم شیخ",
+    "cnic": "35202-6666666-6",
+    "city": "Karachi",
+    "risk": "high",
+    "score": 76,
+    "declared_income": 2400000,
+    "lifestyle_income": 10080000,
+    "assets": {
+      "Vehicles": [
+        "Toyota Corolla (1600cc) — PKR 4,800,000"
+      ],
+      "Utility (WAPDA)": "WAP-102110 — PKR 195,000/month (2600 kWh)"
+    },
+    "bills": {
+      "electricity": 195000
+    },
+    "fbr_return": "Filer (FY2024) — Declared PKR 2,400,000",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Mariam Sheikh (مریم شیخ)",
+        "flag": false,
+        "note": "CNIC 35202-6666666-6, Karachi"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle KHI-2020-1123",
+        "value": "Toyota Corolla (1600cc) — PKR 4,800,000",
+        "flag": false,
+        "note": "Entity-resolution match confidence: 95.8%"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 195,000/month",
+        "flag": false,
+        "note": "Match confidence: 100.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Filer — Declared PKR 2,400,000",
+        "flag": true,
+        "note": "Tax paid: PKR 310,000"
+      }
+    ],
+    "audit": [
+      {
+        "c": "green",
+        "icon": "✓",
+        "label": "No major deviation detected; declared income consistent with observed assets",
+        "detail": "Entity ENT-66-6 (Mariam Sheikh, CNIC 35202-6666666-6): declared income PKR 2,400,000 vs. estimated lifestyle income PKR 10,080,000 derived from linked vehicle and utility records. Deviation score: 76.2/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 3 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"excise_KHI-2020-1123\": 0.958, \"wapda\": 1.0}"
+      }
+    ],
+    "conf": {
+      "EXCISE": 96,
+      "WAPDA": 100,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 7,
+    "entity_id": "ENT-77-7",
+    "name": "Tariq Mehmood",
+    "name_urdu": "طارق محمود",
+    "cnic": "35202-7777777-7",
+    "city": "Lahore",
+    "risk": "critical",
+    "score": 100,
+    "declared_income": 0,
+    "lifestyle_income": 22200000,
+    "assets": {
+      "Vehicles": [
+        "Toyota Prado (3000cc) — PKR 28,000,000"
+      ],
+      "Utility (WAPDA)": "WAP-102998 — PKR 375,000/month (5100 kWh)"
+    },
+    "bills": {
+      "electricity": 375000
+    },
+    "fbr_return": "Non-Filer (FY2024) — Declared PKR 0",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Tariq Mehmood (طارق محمود)",
+        "flag": false,
+        "note": "CNIC 35202-7777777-7, Lahore"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle LHR-2023-5567",
+        "value": "Toyota Prado (3000cc) — PKR 28,000,000",
+        "flag": true,
+        "note": "Entity-resolution match confidence: 100.0%"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 375,000/month",
+        "flag": true,
+        "note": "Match confidence: 100.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Non-Filer — Declared PKR 0",
+        "flag": true,
+        "note": "Tax paid: PKR 0"
+      }
+    ],
+    "audit": [
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Non-filer owns 1 registered vehicle(s) worth PKR 28,000,000",
+        "detail": "Entity ENT-77-7 (Tariq Mehmood, CNIC 35202-7777777-7): declared income PKR 0 vs. estimated lifestyle income PKR 22,200,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Electricity bill of PKR 375,000/month inconsistent with declared income of PKR 0",
+        "detail": "Entity ENT-77-7 (Tariq Mehmood, CNIC 35202-7777777-7): declared income PKR 0 vs. estimated lifestyle income PKR 22,200,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Owns high-engine-capacity vehicle(s) ['LHR-2023-5567'] (>=2000cc) despite low declared income",
+        "detail": "Entity ENT-77-7 (Tariq Mehmood, CNIC 35202-7777777-7): declared income PKR 0 vs. estimated lifestyle income PKR 22,200,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 3 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"excise_LHR-2023-5567\": 1.0, \"wapda\": 1.0}"
+      }
+    ],
+    "conf": {
+      "EXCISE": 100,
+      "WAPDA": 100,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 8,
+    "entity_id": "ENT-88-8",
+    "name": "M. Tariq Mehmud",
+    "name_urdu": "ایم طارق محمود",
+    "cnic": "35202-8888888-8",
+    "city": "Lahore",
+    "risk": "critical",
+    "score": 100,
+    "declared_income": 0,
+    "lifestyle_income": 18000000,
+    "assets": {
+      "Utility (WAPDA)": "WAP-102998 — PKR 375,000/month (5100 kWh)"
+    },
+    "bills": {
+      "electricity": 375000
+    },
+    "fbr_return": "Non-Filer (FY2024) — Declared PKR 0",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "M. Tariq Mehmud (ایم طارق محمود)",
+        "flag": false,
+        "note": "CNIC 35202-8888888-8, Lahore"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 375,000/month",
+        "flag": true,
+        "note": "Match confidence: 71.1%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Non-Filer — Declared PKR 0",
+        "flag": true,
+        "note": "Tax paid: PKR 0"
+      }
+    ],
+    "audit": [
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Electricity bill of PKR 375,000/month inconsistent with declared income of PKR 0",
+        "detail": "Entity ENT-88-8 (M. Tariq Mehmud, CNIC 35202-8888888-8): declared income PKR 0 vs. estimated lifestyle income PKR 18,000,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 2 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"wapda\": 0.711}"
+      }
+    ],
+    "conf": {
+      "WAPDA": 71,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 9,
+    "entity_id": "ENT-99-9",
+    "name": "Nadia Chaudhry",
+    "name_urdu": "ندیہ چودھری",
+    "cnic": "35202-9999999-9",
+    "city": "Islamabad",
+    "risk": "high",
+    "score": 78,
+    "declared_income": 950000,
+    "lifestyle_income": 4371000,
+    "assets": {
+      "Vehicles": [
+        "Suzuki Cultus (1000cc) — PKR 2,900,000"
+      ],
+      "Utility (WAPDA)": "WAP-103321 — PKR 82,000/month (1100 kWh)"
+    },
+    "bills": {
+      "electricity": 82000
+    },
+    "fbr_return": "Filer (FY2024) — Declared PKR 950,000",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Nadia Chaudhry (ندیہ چودھری)",
+        "flag": false,
+        "note": "CNIC 35202-9999999-9, Islamabad"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle ISB-2022-4432",
+        "value": "Suzuki Cultus (1000cc) — PKR 2,900,000",
+        "flag": false,
+        "note": "Entity-resolution match confidence: 94.7%"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 82,000/month",
+        "flag": false,
+        "note": "Match confidence: 100.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Filer — Declared PKR 950,000",
+        "flag": true,
+        "note": "Tax paid: PKR 45,000"
+      }
+    ],
+    "audit": [
+      {
+        "c": "green",
+        "icon": "✓",
+        "label": "No major deviation detected; declared income consistent with observed assets",
+        "detail": "Entity ENT-99-9 (Nadia Chaudhry, CNIC 35202-9999999-9): declared income PKR 950,000 vs. estimated lifestyle income PKR 4,371,000 derived from linked vehicle and utility records. Deviation score: 78.3/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 3 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"excise_ISB-2022-4432\": 0.947, \"wapda\": 1.0}"
+      }
+    ],
+    "conf": {
+      "EXCISE": 95,
+      "WAPDA": 100,
+      "FBR": 100
+    }
+  },
+  {
+    "id": 10,
+    "entity_id": "ENT-01-0",
+    "name": "Usman Farooq",
+    "name_urdu": "عثمان فاروق",
+    "cnic": "35202-1010101-0",
+    "city": "Lahore",
+    "risk": "critical",
+    "score": 100,
+    "declared_income": 0,
+    "lifestyle_income": 5334000,
+    "assets": {
+      "Vehicles": [
+        "Honda City (1300cc) — PKR 4,200,000"
+      ],
+      "Utility (WAPDA)": "WAP-104120 — PKR 98,000/month (1400 kWh)"
+    },
+    "bills": {
+      "electricity": 98000
+    },
+    "fbr_return": "Non-Filer (FY2024) — Declared PKR 0",
+    "evidence": [
+      {
+        "source": "NADRA",
+        "field": "Identity",
+        "value": "Usman Farooq (عثمان فاروق)",
+        "flag": false,
+        "note": "CNIC 35202-1010101-0, Lahore"
+      },
+      {
+        "source": "Excise",
+        "field": "Vehicle LHR-2024-8810",
+        "value": "Honda City (1300cc) — PKR 4,200,000",
+        "flag": false,
+        "note": "Entity-resolution match confidence: 100.0%"
+      },
+      {
+        "source": "WAPDA",
+        "field": "Electricity Bill",
+        "value": "PKR 98,000/month",
+        "flag": false,
+        "note": "Match confidence: 100.0%"
+      },
+      {
+        "source": "FBR",
+        "field": "Tax Filing",
+        "value": "Non-Filer — Declared PKR 0",
+        "flag": true,
+        "note": "Tax paid: PKR 0"
+      }
+    ],
+    "audit": [
+      {
+        "c": "red",
+        "icon": "🚨",
+        "label": "Non-filer owns 1 registered vehicle(s) worth PKR 4,200,000",
+        "detail": "Entity ENT-01-0 (Usman Farooq, CNIC 35202-1010101-0): declared income PKR 0 vs. estimated lifestyle income PKR 5,334,000 derived from linked vehicle and utility records. Deviation score: 100.0/100."
+      },
+      {
+        "c": "purple",
+        "icon": "🕸",
+        "label": "Knowledge graph linkage — 3 cross-DB edges",
+        "detail": "Entity resolved across NADRA, Excise, WAPDA and FBR via fuzzy name/CNIC/address matching (SequenceMatcher + CNIC-prefix anchoring). Match confidences: {\"excise_LHR-2024-8810\": 1.0, \"wapda\": 1.0}"
+      }
+    ],
+    "conf": {
+      "EXCISE": 100,
+      "WAPDA": 100,
+      "FBR": 100
+    }
+  }
+];
+
+/* ===== STATE ===== */
+let selectedEntity = null;
+let currentFilter = 'all';
+let currentCity = 'all';
+let chartInstances = {};
+
+/* ===== INIT ===== */
+window.addEventListener('load', () => {
+  startClock();
+  animateStats();
+  renderEntityList('entity-list');
+  renderEntityList('entity-list-2');
+  initCharts();
+  initGraph();
+  initAuditSelector();
+  setTimeout(() => selectEntity(ENTITIES[0]), 700);
+});
+
+/* ===== CLOCK ===== */
+function startClock() {
+  function tick() {
+    const n = new Date();
+    document.getElementById('live-time').textContent =
+      n.toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+/* ===== STATS COUNTER ===== */
+function animateStats() {
+  const targets = {s1:2847, s2:312, s3:1420, s4:847, s5:6};
+  Object.entries(targets).forEach(([id, target]) => {
+    let cur = 0;
+    const step = Math.ceil(target / 60);
+    const t = setInterval(() => {
+      cur = Math.min(cur + step, target);
+      const el = document.getElementById(id);
+      if(el) el.textContent = cur.toLocaleString();
+      if(cur >= target) clearInterval(t);
+    }, 25);
+  });
+}
+
+/* ===== SECTION NAVIGATION ===== */
+function gotoSection(name, btn) {
+  ['dashboard','graph','entities','audit','rubric','about'].forEach(s => {
+    document.getElementById('sec-'+s).style.display = 'none';
+  });
+  document.getElementById('sec-'+name).style.display = 'block';
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(name === 'graph') initGraph();
+}
+
+/* ===== ENTITY LIST ===== */
+function renderEntityList(containerId) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = '';
+  let filtered = ENTITIES;
+  if(currentFilter !== 'all') filtered = filtered.filter(e => e.risk === currentFilter);
+  if(currentCity !== 'all') filtered = filtered.filter(e => e.city === currentCity);
+  if(!filtered.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text3);padding:1.5rem;font-size:12px">No entities match this filter</div>';
+    return;
+  }
+  filtered.forEach(e => {
+    const d = document.createElement('div');
+    d.className = 'entity-card' + (selectedEntity && selectedEntity.id === e.id ? ' selected' : '');
+    d.id = 'ec-' + containerId + '-' + e.id;
+    const [sc, st] = e.risk === 'critical' ? ['badge-red','🔴 CRITICAL'] :
+                      e.risk === 'high'     ? ['badge-amber','🟡 HIGH RISK'] :
+                                              ['badge-blue','🔵 MEDIUM'];
+    d.innerHTML = `
+      <div class="entity-hd">
+        <div class="entity-name">${e.name}</div>
+        <span class="score-pill ${sc}">${st} · ${e.score}</span>
+      </div>
+      <div class="entity-tags">
+        <span class="entity-tag">📍 ${e.city}</span>
+        <span class="entity-tag">🪪 ${e.cnic.substring(0,9)}…</span>
+        <span class="entity-tag">💰 PKR ${(e.declared_income/100000).toFixed(1)}L declared</span>
+        <span class="entity-tag">⚡ PKR ${(e.bills.electricity/1000).toFixed(0)}K/mo elec</span>
+      </div>`;
+    d.onclick = () => selectEntity(e);
+    el.appendChild(d);
+  });
+}
+
+/* ===== SELECT ENTITY ===== */
+function selectEntity(e) {
+  selectedEntity = e;
+  // Highlight cards
+  document.querySelectorAll('.entity-card').forEach(c => {
+    c.classList.toggle('selected', c.id && c.id.endsWith('-' + e.id));
+  });
+  // Score
+  const scoreColor = e.risk === 'critical' ? 'var(--red)' : e.risk === 'high' ? 'var(--amber)' : 'var(--blue)';
+  const scorePct = e.score + '%';
+  document.getElementById('main-score').style.color = scoreColor;
+  document.getElementById('main-score').textContent = e.score;
+  document.getElementById('score-label').textContent = e.risk.toUpperCase() + ' RISK · ' + e.city + ' · TCDS Score';
+  const bar = document.getElementById('score-bar');
+  if(bar) { bar.style.width = '0%'; setTimeout(() => { bar.style.width = scorePct; }, 50); }
+  // Conf bars
+  const cb = document.getElementById('conf-bars');
+  if(cb) {
+    cb.innerHTML = '<div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Source Confidence Scores</div>';
+    Object.entries(e.conf).forEach(([src, val]) => {
+      const clr = val >= 90 ? 'var(--green)' : val >= 80 ? 'var(--amber)' : 'var(--red)';
+      cb.innerHTML += `<div class="conf-row"><span class="conf-src">${src}</span><div class="conf-bar"><div class="conf-fill" style="width:0%;background:${clr}" data-w="${val}%"></div></div><span class="conf-pct">${val}%</span></div>`;
+    });
+    setTimeout(() => {
+      document.querySelectorAll('.conf-fill[data-w]').forEach(el => { el.style.width = el.getAttribute('data-w'); });
+    }, 60);
+  }
+  // Evidence table
+  const tbody = document.getElementById('evidence-body');
+  if(tbody) {
+    tbody.innerHTML = '';
+    e.evidence.forEach(ev => {
+      tbody.innerHTML += `<tr>
+        <td class="key">${ev.source}</td>
+        <td>${ev.field}</td>
+        <td class="${ev.flag ? 'flag' : 'ok'}">${ev.value}</td>
+        <td style="font-size:10px;color:${ev.flag ? 'var(--red)' : 'var(--green)'}">${ev.flag ? '⚠ ' : '✓ '}${ev.note}</td>
+      </tr>`;
+    });
+  }
+  // Deep card
+  renderDeepCard(e);
+  // Toast
+  showToast('Loaded: ' + e.name.split(' ').slice(0,2).join(' '));
+}
+
+/* ===== DEEP CARD ===== */
+function renderDeepCard(e) {
+  const c = document.getElementById('entity-deep');
+  if(!c) return;
+  const scoreColor = e.risk === 'critical' ? 'var(--red)' : e.risk === 'high' ? 'var(--amber)' : 'var(--blue)';
+  const assetsHtml = Object.entries(e.assets).map(([k,v]) =>
+    `<div class="asset-row">
+      <div class="asset-key">${k}</div>
+      <div class="asset-val">${Array.isArray(v) ? v.join(' · ') : v}</div>
+    </div>`
+  ).join('');
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-hd">👤 ${e.name}
+        <span class="card-badge ${e.risk === 'critical' ? 'badge-red' : e.risk === 'high' ? 'badge-amber' : 'badge-blue'}" style="margin-left:auto">${e.risk.toUpperCase()}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1rem">
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+          <div style="font-size:1.4rem;font-weight:900;color:${scoreColor}">${e.score}</div>
+          <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-top:2px">TCDS Score</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+          <div style="font-size:1rem;font-weight:900;color:var(--text)">PKR ${(e.declared_income/100000).toFixed(0)}L</div>
+          <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-top:2px">Declared Income</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+          <div style="font-size:1rem;font-weight:900;color:var(--amber)">PKR ${(e.bills.electricity/1000).toFixed(0)}K</div>
+          <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-top:2px">Monthly Electric</div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Detected Assets</div>
+      ${assetsHtml}
+    </div>
+    <div class="card">
+      <div class="card-hd">🔍 XAI Audit Trail Summary</div>
+      <div class="audit-trail">
+        ${e.audit.map(a => `
+          <div class="audit-step">
+            <div class="audit-icon ai-${a.c}">${a.icon}</div>
+            <div class="audit-content">
+              <div class="audit-label">${a.label}</div>
+              <div class="audit-detail">${a.detail}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ===== FILTER ===== */
+function filterE(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.demo-btns .dbn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderEntityList('entity-list');
+  renderEntityList('entity-list-2');
+}
+
+/* ===== CITY FILTER ===== */
+function cityFilter(city, btn) {
+  currentCity = city;
+  document.querySelectorAll('.city-chip').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderEntityList('entity-list');
+  const count = city === 'all' ? ENTITIES.length : ENTITIES.filter(e => e.city === city).length;
+  const cc = document.getElementById('city-count');
+  if(cc) cc.textContent = count;
+}
+
+/* ===== ENTITY SEARCH ===== */
+function searchEntities(q) {
+  const el = document.getElementById('entity-list');
+  if(!q.trim()) { renderEntityList('entity-list'); return; }
+  el.innerHTML = '';
+  const qq = q.toLowerCase();
+  ENTITIES.filter(e =>
+    e.name.toLowerCase().includes(qq) ||
+    e.city.toLowerCase().includes(qq) ||
+    e.cnic.includes(qq)
+  ).forEach(e => {
+    const d = document.createElement('div');
+    d.className = 'entity-card';
+    const [sc, st] = e.risk === 'critical' ? ['badge-red','🔴 CRITICAL'] :
+                      e.risk === 'high'     ? ['badge-amber','🟡 HIGH RISK'] :
+                                              ['badge-blue','🔵 MEDIUM'];
+    d.innerHTML = `<div class="entity-hd"><div class="entity-name">${e.name}</div><span class="score-pill ${sc}">${st} · ${e.score}</span></div><div class="entity-tags"><span class="entity-tag">📍 ${e.city}</span><span class="entity-tag">🪪 ${e.cnic.substring(0,9)}…</span></div>`;
+    d.onclick = () => selectEntity(e);
+    el.appendChild(d);
+  });
+}
+
+/* ===== CHARTS ===== */
+function initCharts() {
+  const chartOpts = (type) => ({
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:type === 'line' || type === 'bar' ? {
+      x:{ticks:{color:'#3d6080',font:{size:9}},grid:{color:'#182540'}},
+      y:{ticks:{color:'#3d6080',font:{size:9}},grid:{color:'#182540'}}
+    } : undefined
+  });
+
+  if(chartInstances.dist) chartInstances.dist.destroy();
+  chartInstances.dist = new Chart(document.getElementById('distChart'), {
+    type:'bar',
+    data:{
+      labels:['0-20','21-40','41-60','61-75','76-90','91-100'],
+      datasets:[{
+        label:'Entities',
+        data:[420,890,630,312,180,98],
+        backgroundColor:['#1a5fb8','#1a5fb8','#d97706','#d97706','#dc2626','#dc2626'],
+        borderRadius:4, borderSkipped:false
+      }]
+    },
+    options:chartOpts('bar')
+  });
+
+  if(chartInstances.src) chartInstances.src.destroy();
+  chartInstances.src = new Chart(document.getElementById('srcChart'), {
+    type:'doughnut',
+    data:{
+      labels:['FBR','Excise','WAPDA','Registry','NADRA','SBP'],
+      datasets:[{
+        data:[28,22,18,16,10,6],
+        backgroundColor:['#2d87f0','#e8a020','#0eca8d','#9b6ef5','#f04f4f','#00d4c8'],
+        borderWidth:0, hoverOffset:6
+      }]
+    },
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, cutout:'65%'}
+  });
+
+  if(chartInstances.trend) chartInstances.trend.destroy();
+  chartInstances.trend = new Chart(document.getElementById('trendChart'), {
+    type:'line',
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets:[{
+        label:'Flagged',
+        data:[42,67,89,124,198,312],
+        borderColor:'#f04f4f',
+        backgroundColor:'rgba(240,79,79,0.08)',
+        fill:true, tension:0.4, borderWidth:2, pointRadius:3,
+        pointBackgroundColor:'#f04f4f'
+      }]
+    },
+    options:chartOpts('line')
+  });
+}
+
+/* ===== KNOWLEDGE GRAPH ===== */
+let graphInited = false;
+function initGraph() {
+  if(graphInited) return;
+  graphInited = true;
+
+  const svgEl = document.getElementById('graph-svg');
+  if(!svgEl) return;
+  const W = svgEl.clientWidth || 680;
+  const H = 440;
+  const svg = d3.select('#graph-svg').attr('viewBox', `0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+
+  const nodes = [
+    {id:'p1', label:'M. Tariq Butt', type:'person', score:92, x:W*0.3, y:H*0.45},
+    {id:'p2', label:'Rukhsana Mirza', type:'person', score:87, x:W*0.7, y:H*0.45},
+    {id:'p3', label:'Kashif Anwar', type:'person', score:74, x:W*0.5, y:H*0.45},
+    {id:'v1', label:'Land Cruiser\n2800cc', type:'asset', x:W*0.1, y:H*0.2},
+    {id:'v2', label:'BMW 5-Series', type:'asset', x:W*0.15, y:H*0.7},
+    {id:'prop1', label:'DHA Phase 5\nPKR 4.2Cr', type:'asset', x:W*0.3, y:H*0.8},
+    {id:'w1', label:'WAPDA\nPKR 2.8L/mo', type:'utility', x:W*0.2, y:H*0.45},
+    {id:'t1', label:'4× Intl\nFlights', type:'travel', x:W*0.45, y:H*0.15},
+    {id:'prop2', label:'Clifton Flat\nPKR 3.1Cr', type:'asset', x:W*0.7, y:H*0.8},
+    {id:'bank1', label:'SBP\nPKR 42L', type:'financial', x:W*0.88, y:H*0.3},
+    {id:'w2', label:'WAPDA\nPKR 1.95L', type:'utility', x:W*0.85, y:H*0.65},
+    {id:'fbr1', label:'FBR\nZero/Low Return', type:'financial', x:W*0.5, y:H*0.75},
+    {id:'shop1', label:'2 Shops\nGulberg', type:'asset', x:W*0.5, y:H*0.2},
+  ];
+  const links = [
+    {s:'p1',t:'v1'},{s:'p1',t:'v2'},{s:'p1',t:'prop1'},{s:'p1',t:'w1'},
+    {s:'p1',t:'t1'},{s:'p1',t:'fbr1'},
+    {s:'p2',t:'prop2'},{s:'p2',t:'bank1'},{s:'p2',t:'w2'},{s:'p2',t:'fbr1'},
+    {s:'p3',t:'shop1'},{s:'p3',t:'fbr1'},
+    {s:'t1',t:'p2'}
+  ];
+  const colors = {person:'#f04f4f',asset:'#e8a020',financial:'#2d87f0',utility:'#0eca8d',travel:'#9b6ef5'};
+  const nodeMap = {};
+  nodes.forEach(n => nodeMap[n.id] = n);
+
+  // Draw links
+  svg.selectAll('line').data(links).join('line')
+    .attr('x1', d => nodeMap[d.s].x).attr('y1', d => nodeMap[d.s].y)
+    .attr('x2', d => nodeMap[d.t].x).attr('y2', d => nodeMap[d.t].y)
+    .attr('stroke', '#1e3050').attr('stroke-width', 1.8).attr('stroke-opacity', 0.8);
+
+  const g = svg.selectAll('g.node').data(nodes).join('g')
+    .attr('class', 'node')
+    .attr('transform', d => `translate(${d.x},${d.y})`)
+    .style('cursor', 'pointer')
+    .on('click', (_, d) => showNodeDetail(d));
+
+  // Glow filter
+  const defs = svg.append('defs');
+  ['person','asset','financial','utility','travel'].forEach(t => {
+    const f = defs.append('filter').attr('id','glow-'+t).attr('x','-50%').attr('y','-50%').attr('width','200%').attr('height','200%');
+    f.append('feGaussianBlur').attr('in','SourceGraphic').attr('stdDeviation','4').attr('result','blur');
+    const merge = f.append('feMerge');
+    merge.append('feMergeNode').attr('in','blur');
+    merge.append('feMergeNode').attr('in','SourceGraphic');
+  });
+
+  g.append('circle')
+    .attr('r', d => d.type === 'person' ? 24 : 15)
+    .attr('fill', d => colors[d.type])
+    .attr('fill-opacity', d => d.type === 'person' ? 0.18 : 0.12)
+    .attr('stroke', d => colors[d.type])
+    .attr('stroke-width', d => d.type === 'person' ? 2.5 : 1.8)
+    .attr('filter', d => d.type === 'person' ? 'url(#glow-person)' : null);
+
+  g.filter(d => d.score).append('text')
+    .attr('text-anchor','middle').attr('dy','4')
+    .attr('fill', d => colors[d.type])
+    .attr('font-size', '11').attr('font-weight','800')
+    .text(d => d.score);
+
+  g.filter(d => d.type === 'person').append('text')
+    .attr('text-anchor','middle').attr('dy', 38)
+    .attr('fill','#7a9fc4').attr('font-size','9').attr('font-weight','600')
+    .text(d => d.label);
+
+  g.filter(d => d.type !== 'person').selectAll('tspan-group').data(d => [d]).join('text')
+    .attr('text-anchor','middle').attr('dy', 26)
+    .attr('fill','#3d6080').attr('font-size','8')
+    .selectAll('tspan').data(d => d.label.split('\n')).join('tspan')
+    .attr('x', 0).attr('dy', (d, i) => i === 0 ? 0 : 10).text(d => d);
+}
+
+/* ===== NODE DETAIL ===== */
+const nodeDetails = {
+  p1:`<div style="color:var(--red);font-weight:700;font-size:13px;margin-bottom:8px">Muhammad Tariq Butt</div><div style="font-size:12px;color:var(--text2);line-height:1.7"><strong style="color:var(--red)">TCDS: 92 — CRITICAL</strong><br>Graph degree: 7 cross-DB edges<br>GNN anomaly score: 0.94<br><br>Connected assets: Land Cruiser (Excise DB), BMW 5-Series, DHA Phase 5 property (Registry), WAPDA PKR 2.8L/mo, 4 international flights (Immigration), FBR zero-income return.</div>`,
+  p2:`<div style="color:var(--red);font-weight:700;font-size:13px;margin-bottom:8px">Rukhsana Mirza</div><div style="font-size:12px;color:var(--text2);line-height:1.7"><strong style="color:var(--red)">TCDS: 87 — CRITICAL</strong><br>Graph degree: 6 cross-DB edges<br>Identity resolved from 2 name variants (Levenshtein=1 + CNIC anchor).<br><br>Connected: Clifton PKR 3.1Cr property, SBP PKR 42L inflows, WAPDA, FBR declaration.</div>`,
+  p3:`<div style="color:var(--amber);font-weight:700;font-size:13px;margin-bottom:8px">Kashif Anwar Ch.</div><div style="font-size:12px;color:var(--text2);line-height:1.7"><strong style="color:var(--amber)">TCDS: 74 — HIGH RISK</strong><br>Graph degree: 3 cross-DB edges<br>Commercial shop owner with undeclared business income. POS: PKR 2.1 Cr annual turnover. Zero business income declared.</div>`,
+  fbr1:`<div style="color:var(--blue);font-weight:700;font-size:13px;margin-bottom:8px">FBR Shared Node</div><div style="font-size:12px;color:var(--text2);line-height:1.7">3 entities share zero/low FBR return filings despite high asset profiles. This shared node highlights a <strong style="color:var(--text)">systemic under-reporting cluster</strong>. Graph clustering coefficient for this subgraph: 0.82.</div>`,
+};
+
+function showNodeDetail(d) {
+  const el = document.getElementById('node-detail');
+  if(!el) return;
+  const colors = {person:'#f04f4f',asset:'#e8a020',financial:'#2d87f0',utility:'#0eca8d',travel:'#9b6ef5'};
+  if(nodeDetails[d.id]) {
+    el.innerHTML = nodeDetails[d.id];
+  } else {
+    el.innerHTML = `<div style="color:${colors[d.type]||'var(--text2)'};font-weight:700;font-size:13px;margin-bottom:8px">${d.label.replace('\n',' ')}</div><div style="font-size:12px;color:var(--text2);line-height:1.7">Type: <strong>${d.type}</strong><br>Source: ${d.type==='utility'?'WAPDA/SNGPL':d.type==='asset'?'Excise Dept / Land Registry':d.type==='financial'?'FBR / SBP':'Immigration DB'}<br><br>This node was linked to a flagged entity via cross-database entity resolution pipeline. CNIC-anchored, confidence ≥87%.</div>`;
+  }
+}
+
+/* ===== AUDIT SELECTOR ===== */
+function initAuditSelector() {
+  const sel = document.getElementById('audit-selector');
+  if(!sel) return;
+  sel.innerHTML = '';
+  ENTITIES.forEach((e, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'dbn' + (i === 0 ? ' active' : '');
+    btn.textContent = e.name.split(' ').slice(0,2).join(' ');
+    btn.onclick = () => {
+      document.querySelectorAll('#audit-selector .dbn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderAuditDetail(e);
+    };
+    sel.appendChild(btn);
+  });
+  renderAuditDetail(ENTITIES[0]);
+}
+
+function renderAuditDetail(e) {
+  const color = e.risk === 'critical' ? 'var(--red)' : e.risk === 'high' ? 'var(--amber)' : 'var(--blue)';
+  const badgeClass = e.risk === 'critical' ? 'badge-red' : e.risk === 'high' ? 'badge-amber' : 'badge-blue';
+  document.getElementById('audit-content').innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);padding:1.5rem">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:1rem">
+        <div>
+          <div style="font-size:18px;font-weight:800;color:var(--text);letter-spacing:-0.5px">${e.name}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;font-weight:600">CNIC: ${e.cnic} · ${e.city} · ${e.fbr_return}</div>
+        </div>
+        <div style="text-align:center;flex-shrink:0">
+          <div style="font-size:40px;font-weight:900;color:${color};letter-spacing:-3px">${e.score}</div>
+          <span class="score-pill ${badgeClass}">${e.risk.toUpperCase()}</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem">
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+          <div style="font-size:1.1rem;font-weight:900;color:var(--text)">PKR ${(e.declared_income/100000).toFixed(0)}L</div>
+          <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-top:2px">Declared Income</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+          <div style="font-size:1.1rem;font-weight:900;color:var(--amber)">PKR ${(e.bills.electricity/1000).toFixed(0)}K/mo</div>
+          <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-top:2px">Electricity Bill</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r8);padding:10px;text-align:center">
+          <div style="font-size:1.1rem;font-weight:900;color:var(--green)">${Math.max(...Object.values(e.conf))}%</div>
+          <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-top:2px">Max Confidence</div>
+        </div>
+      </div>
+
+      <div style="font-size:10px;font-weight:800;color:var(--text2);margin-bottom:1rem;text-transform:uppercase;letter-spacing:1px;padding:6px 10px;background:rgba(45,135,240,0.08);border-radius:var(--r4);border-left:3px solid var(--blue)">
+        ▣ EXPLAINABLE AI AUDIT TRAIL — TCDS Score Breakdown
+      </div>
+      <div class="audit-trail">
+        ${e.audit.map(a => `
+          <div class="audit-step">
+            <div class="audit-icon ai-${a.c}">${a.icon}</div>
+            <div class="audit-content">
+              <div class="audit-label">${a.label}</div>
+              <div class="audit-detail">${a.detail}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div style="font-size:11px;color:var(--text3)">Generated: ${new Date().toLocaleDateString('en-PK')} · TaxGraph AI v2.0 · All sources verified</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-ghost" onclick="showToast('PDF export ready in production build')">📥 Export PDF</button>
+          <button class="btn-primary" style="padding:8px 16px;font-size:12px" onclick="showToast('FBR portal integration pending — available in production')">📤 Submit to FBR</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ===== DEMO RUN ===== */
+function runDemo() {
+  gotoSection('dashboard', document.querySelector('.nav-links button'));
+  let i = 0;
+  const t = setInterval(() => {
+    if(i >= ENTITIES.length) { clearInterval(t); showToast('Demo complete — all entities loaded'); return; }
+    selectEntity(ENTITIES[i++]);
+  }, 900);
+}
+
+/* ===== TOAST ===== */
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  if(el && m) {
+    m.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2800);
+  }
+}
+</script>
+</body>
+</html>

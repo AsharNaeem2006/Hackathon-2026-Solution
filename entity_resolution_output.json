@@ -1,0 +1,293 @@
+[
+  {
+    "entity_id": "ENT-11-1",
+    "cnic": "35202-1111111-1",
+    "name": "Ahmad Ali Khan",
+    "name_urdu": "احمد علی خان",
+    "address": "House 12 Street 5 F-8 Markaz",
+    "city": "Islamabad",
+    "vehicles": [
+      {
+        "reg_no": "ISB-2024-0011",
+        "make": "Toyota",
+        "model": "Land Cruiser",
+        "engine_cc": 4500,
+        "value_pkr": 45000000
+      },
+      {
+        "reg_no": "ISB-2023-7765",
+        "make": "Toyota",
+        "model": "Fortuner",
+        "engine_cc": 2700,
+        "value_pkr": 18500000
+      }
+    ],
+    "utility": {
+      "consumer_id": "WAP-100234",
+      "avg_monthly_bill_pkr": 310000,
+      "avg_monthly_units_kwh": 4200
+    },
+    "tax_filing": {
+      "status": "Non-Filer",
+      "declared_income_pkr": 0,
+      "tax_paid_pkr": 0
+    },
+    "match_scores": {
+      "excise_ISB-2024-0011": 0.918,
+      "excise_ISB-2023-7765": 0.849,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-22-2",
+    "cnic": "35202-2222222-2",
+    "name": "Ahmed A. Khan",
+    "name_urdu": "احمد اے خان",
+    "address": "12 F8/3 Islamabad",
+    "city": "Islamabad",
+    "vehicles": [],
+    "utility": {
+      "consumer_id": "WAP-100234",
+      "avg_monthly_bill_pkr": 310000,
+      "avg_monthly_units_kwh": 4200
+    },
+    "tax_filing": {
+      "status": "Non-Filer",
+      "declared_income_pkr": 0,
+      "tax_paid_pkr": 0
+    },
+    "match_scores": {
+      "wapda": 0.649
+    }
+  },
+  {
+    "entity_id": "ENT-33-3",
+    "cnic": "35202-3333333-3",
+    "name": "Sana Fatima",
+    "name_urdu": "ثناء فاطمہ",
+    "address": "Plot 45 DHA Phase 6",
+    "city": "Lahore",
+    "vehicles": [
+      {
+        "reg_no": "LHR-2022-3344",
+        "make": "Honda",
+        "model": "Civic",
+        "engine_cc": 1800,
+        "value_pkr": 6500000
+      }
+    ],
+    "utility": {
+      "consumer_id": "WAP-100892",
+      "avg_monthly_bill_pkr": 135000,
+      "avg_monthly_units_kwh": 1800
+    },
+    "tax_filing": {
+      "status": "Filer",
+      "declared_income_pkr": 1800000,
+      "tax_paid_pkr": 185000
+    },
+    "match_scores": {
+      "excise_LHR-2022-3344": 0.976,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-44-4",
+    "cnic": "35202-4444444-4",
+    "name": "Bilal Hussain",
+    "name_urdu": "بلال حسین",
+    "address": "House 9 Bahria Town",
+    "city": "Rawalpindi",
+    "vehicles": [
+      {
+        "reg_no": "RWP-2021-9981",
+        "make": "Suzuki",
+        "model": "Alto",
+        "engine_cc": 1000,
+        "value_pkr": 2200000
+      }
+    ],
+    "utility": {
+      "consumer_id": "WAP-101455",
+      "avg_monthly_bill_pkr": 68000,
+      "avg_monthly_units_kwh": 950
+    },
+    "tax_filing": {
+      "status": "Filer",
+      "declared_income_pkr": 600000,
+      "tax_paid_pkr": 5000
+    },
+    "match_scores": {
+      "excise_RWP-2021-9981": 0.995,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-55-5",
+    "cnic": "35202-5555555-5",
+    "name": "Bilal Husain",
+    "name_urdu": "بلال حسین",
+    "address": "9-B Bahria Twn Phase 4",
+    "city": "Rawalpindi",
+    "vehicles": [],
+    "utility": {
+      "consumer_id": "WAP-101455",
+      "avg_monthly_bill_pkr": 68000,
+      "avg_monthly_units_kwh": 950
+    },
+    "tax_filing": {
+      "status": "Non-Filer",
+      "declared_income_pkr": 0,
+      "tax_paid_pkr": 0
+    },
+    "match_scores": {
+      "wapda": 0.81
+    }
+  },
+  {
+    "entity_id": "ENT-66-6",
+    "cnic": "35202-6666666-6",
+    "name": "Mariam Sheikh",
+    "name_urdu": "مریم شیخ",
+    "address": "Flat 3B Clifton Block 5",
+    "city": "Karachi",
+    "vehicles": [
+      {
+        "reg_no": "KHI-2020-1123",
+        "make": "Toyota",
+        "model": "Corolla",
+        "engine_cc": 1600,
+        "value_pkr": 4800000
+      }
+    ],
+    "utility": {
+      "consumer_id": "WAP-102110",
+      "avg_monthly_bill_pkr": 195000,
+      "avg_monthly_units_kwh": 2600
+    },
+    "tax_filing": {
+      "status": "Filer",
+      "declared_income_pkr": 2400000,
+      "tax_paid_pkr": 310000
+    },
+    "match_scores": {
+      "excise_KHI-2020-1123": 0.958,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-77-7",
+    "cnic": "35202-7777777-7",
+    "name": "Tariq Mehmood",
+    "name_urdu": "طارق محمود",
+    "address": "House 77 Model Town",
+    "city": "Lahore",
+    "vehicles": [
+      {
+        "reg_no": "LHR-2023-5567",
+        "make": "Toyota",
+        "model": "Prado",
+        "engine_cc": 3000,
+        "value_pkr": 28000000
+      }
+    ],
+    "utility": {
+      "consumer_id": "WAP-102998",
+      "avg_monthly_bill_pkr": 375000,
+      "avg_monthly_units_kwh": 5100
+    },
+    "tax_filing": {
+      "status": "Non-Filer",
+      "declared_income_pkr": 0,
+      "tax_paid_pkr": 0
+    },
+    "match_scores": {
+      "excise_LHR-2023-5567": 1.0,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-88-8",
+    "cnic": "35202-8888888-8",
+    "name": "M. Tariq Mehmud",
+    "name_urdu": "ایم طارق محمود",
+    "address": "77-A Model Twn Lahore",
+    "city": "Lahore",
+    "vehicles": [],
+    "utility": {
+      "consumer_id": "WAP-102998",
+      "avg_monthly_bill_pkr": 375000,
+      "avg_monthly_units_kwh": 5100
+    },
+    "tax_filing": {
+      "status": "Non-Filer",
+      "declared_income_pkr": 0,
+      "tax_paid_pkr": 0
+    },
+    "match_scores": {
+      "wapda": 0.711
+    }
+  },
+  {
+    "entity_id": "ENT-99-9",
+    "cnic": "35202-9999999-9",
+    "name": "Nadia Chaudhry",
+    "name_urdu": "ندیہ چودھری",
+    "address": "House 21 G-9/2 Islamabad",
+    "city": "Islamabad",
+    "vehicles": [
+      {
+        "reg_no": "ISB-2022-4432",
+        "make": "Suzuki",
+        "model": "Cultus",
+        "engine_cc": 1000,
+        "value_pkr": 2900000
+      }
+    ],
+    "utility": {
+      "consumer_id": "WAP-103321",
+      "avg_monthly_bill_pkr": 82000,
+      "avg_monthly_units_kwh": 1100
+    },
+    "tax_filing": {
+      "status": "Filer",
+      "declared_income_pkr": 950000,
+      "tax_paid_pkr": 45000
+    },
+    "match_scores": {
+      "excise_ISB-2022-4432": 0.947,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-01-0",
+    "cnic": "35202-1010101-0",
+    "name": "Usman Farooq",
+    "name_urdu": "عثمان فاروق",
+    "address": "House 5 Gulberg III",
+    "city": "Lahore",
+    "vehicles": [
+      {
+        "reg_no": "LHR-2024-8810",
+        "make": "Honda",
+        "model": "City",
+        "engine_cc": 1300,
+        "value_pkr": 4200000
+      }
+    ],
+    "utility": {
+      "consumer_id": "WAP-104120",
+      "avg_monthly_bill_pkr": 98000,
+      "avg_monthly_units_kwh": 1400
+    },
+    "tax_filing": {
+      "status": "Non-Filer",
+      "declared_income_pkr": 0,
+      "tax_paid_pkr": 0
+    },
+    "match_scores": {
+      "excise_LHR-2024-8810": 1.0,
+      "wapda": 1.0
+    }
+  }
+]

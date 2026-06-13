@@ -1,0 +1,11 @@
+entity_id,name,cnic,filing_status,declared_income_pkr,estimated_lifestyle_income_pkr,deviation_score
+ENT-11-1,Ahmad Ali Khan,35202-1111111-1,Non-Filer,0,24405000,100.0
+ENT-22-2,Ahmed A. Khan,35202-2222222-2,Non-Filer,0,14880000,100.0
+ENT-55-5,Bilal Husain,35202-5555555-5,Non-Filer,0,3264000,100.0
+ENT-77-7,Tariq Mehmood,35202-7777777-7,Non-Filer,0,22200000,100.0
+ENT-88-8,M. Tariq Mehmud,35202-8888888-8,Non-Filer,0,18000000,100.0
+ENT-01-0,Usman Farooq,35202-1010101-0,Non-Filer,0,5334000,100.0
+ENT-44-4,Bilal Hussain,35202-4444444-4,Filer,600000,3594000,83.3
+ENT-99-9,Nadia Chaudhry,35202-9999999-9,Filer,950000,4371000,78.3
+ENT-66-6,Mariam Sheikh,35202-6666666-6,Filer,2400000,10080000,76.2
+ENT-33-3,Sana Fatima,35202-3333333-3,Filer,1800000,7455000,75.9

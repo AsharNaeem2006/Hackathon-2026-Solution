@@ -1,0 +1,8 @@
+filer_cnic,filer_name,tax_year,declared_income_pkr,tax_paid_pkr,filing_status,property_declared
+35202-1111111-1,Ahmad Ali Khan,2024,0,0,Non-Filer,No
+35202-3333333-3,Sana Fatima,2024,1800000,185000,Filer,Yes
+35202-4444444-4,Bilal Hussain,2024,600000,5000,Filer,No
+35202-6666666-6,Mariam Sheikh,2024,2400000,310000,Filer,Yes
+35202-7777777-7,Tariq Mehmood,2024,0,0,Non-Filer,No
+35202-9999999-9,Nadia Chaudhry,2024,950000,45000,Filer,No
+35202-1010101-0,Usman Farooq,2024,0,0,Non-Filer,No

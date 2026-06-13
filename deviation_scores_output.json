@@ -1,0 +1,219 @@
+[
+  {
+    "entity_id": "ENT-11-1",
+    "name": "Ahmad Ali Khan",
+    "cnic": "35202-1111111-1",
+    "filing_status": "Non-Filer",
+    "declared_income_pkr": 0,
+    "estimated_lifestyle_income_pkr": 24405000,
+    "deviation_score": 100.0,
+    "audit_reasons": [
+      "Non-filer owns 2 registered vehicle(s) worth PKR 63,500,000",
+      "Electricity bill of PKR 310,000/month inconsistent with declared income of PKR 0",
+      "Owns high-engine-capacity vehicle(s) ['ISB-2024-0011', 'ISB-2023-7765'] (>=2000cc) despite low declared income"
+    ],
+    "linked_records": {
+      "vehicles": [
+        "ISB-2024-0011",
+        "ISB-2023-7765"
+      ],
+      "utility": "WAP-100234"
+    },
+    "match_confidence": {
+      "excise_ISB-2024-0011": 0.918,
+      "excise_ISB-2023-7765": 0.849,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-22-2",
+    "name": "Ahmed A. Khan",
+    "cnic": "35202-2222222-2",
+    "filing_status": "Non-Filer",
+    "declared_income_pkr": 0,
+    "estimated_lifestyle_income_pkr": 14880000,
+    "deviation_score": 100.0,
+    "audit_reasons": [
+      "Electricity bill of PKR 310,000/month inconsistent with declared income of PKR 0"
+    ],
+    "linked_records": {
+      "vehicles": [],
+      "utility": "WAP-100234"
+    },
+    "match_confidence": {
+      "wapda": 0.649
+    }
+  },
+  {
+    "entity_id": "ENT-55-5",
+    "name": "Bilal Husain",
+    "cnic": "35202-5555555-5",
+    "filing_status": "Non-Filer",
+    "declared_income_pkr": 0,
+    "estimated_lifestyle_income_pkr": 3264000,
+    "deviation_score": 100.0,
+    "audit_reasons": [
+      "No major deviation detected; declared income consistent with observed assets"
+    ],
+    "linked_records": {
+      "vehicles": [],
+      "utility": "WAP-101455"
+    },
+    "match_confidence": {
+      "wapda": 0.81
+    }
+  },
+  {
+    "entity_id": "ENT-77-7",
+    "name": "Tariq Mehmood",
+    "cnic": "35202-7777777-7",
+    "filing_status": "Non-Filer",
+    "declared_income_pkr": 0,
+    "estimated_lifestyle_income_pkr": 22200000,
+    "deviation_score": 100.0,
+    "audit_reasons": [
+      "Non-filer owns 1 registered vehicle(s) worth PKR 28,000,000",
+      "Electricity bill of PKR 375,000/month inconsistent with declared income of PKR 0",
+      "Owns high-engine-capacity vehicle(s) ['LHR-2023-5567'] (>=2000cc) despite low declared income"
+    ],
+    "linked_records": {
+      "vehicles": [
+        "LHR-2023-5567"
+      ],
+      "utility": "WAP-102998"
+    },
+    "match_confidence": {
+      "excise_LHR-2023-5567": 1.0,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-88-8",
+    "name": "M. Tariq Mehmud",
+    "cnic": "35202-8888888-8",
+    "filing_status": "Non-Filer",
+    "declared_income_pkr": 0,
+    "estimated_lifestyle_income_pkr": 18000000,
+    "deviation_score": 100.0,
+    "audit_reasons": [
+      "Electricity bill of PKR 375,000/month inconsistent with declared income of PKR 0"
+    ],
+    "linked_records": {
+      "vehicles": [],
+      "utility": "WAP-102998"
+    },
+    "match_confidence": {
+      "wapda": 0.711
+    }
+  },
+  {
+    "entity_id": "ENT-01-0",
+    "name": "Usman Farooq",
+    "cnic": "35202-1010101-0",
+    "filing_status": "Non-Filer",
+    "declared_income_pkr": 0,
+    "estimated_lifestyle_income_pkr": 5334000,
+    "deviation_score": 100.0,
+    "audit_reasons": [
+      "Non-filer owns 1 registered vehicle(s) worth PKR 4,200,000"
+    ],
+    "linked_records": {
+      "vehicles": [
+        "LHR-2024-8810"
+      ],
+      "utility": "WAP-104120"
+    },
+    "match_confidence": {
+      "excise_LHR-2024-8810": 1.0,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-44-4",
+    "name": "Bilal Hussain",
+    "cnic": "35202-4444444-4",
+    "filing_status": "Filer",
+    "declared_income_pkr": 600000,
+    "estimated_lifestyle_income_pkr": 3594000,
+    "deviation_score": 83.3,
+    "audit_reasons": [
+      "No major deviation detected; declared income consistent with observed assets"
+    ],
+    "linked_records": {
+      "vehicles": [
+        "RWP-2021-9981"
+      ],
+      "utility": "WAP-101455"
+    },
+    "match_confidence": {
+      "excise_RWP-2021-9981": 0.995,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-99-9",
+    "name": "Nadia Chaudhry",
+    "cnic": "35202-9999999-9",
+    "filing_status": "Filer",
+    "declared_income_pkr": 950000,
+    "estimated_lifestyle_income_pkr": 4371000,
+    "deviation_score": 78.3,
+    "audit_reasons": [
+      "No major deviation detected; declared income consistent with observed assets"
+    ],
+    "linked_records": {
+      "vehicles": [
+        "ISB-2022-4432"
+      ],
+      "utility": "WAP-103321"
+    },
+    "match_confidence": {
+      "excise_ISB-2022-4432": 0.947,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-66-6",
+    "name": "Mariam Sheikh",
+    "cnic": "35202-6666666-6",
+    "filing_status": "Filer",
+    "declared_income_pkr": 2400000,
+    "estimated_lifestyle_income_pkr": 10080000,
+    "deviation_score": 76.2,
+    "audit_reasons": [
+      "No major deviation detected; declared income consistent with observed assets"
+    ],
+    "linked_records": {
+      "vehicles": [
+        "KHI-2020-1123"
+      ],
+      "utility": "WAP-102110"
+    },
+    "match_confidence": {
+      "excise_KHI-2020-1123": 0.958,
+      "wapda": 1.0
+    }
+  },
+  {
+    "entity_id": "ENT-33-3",
+    "name": "Sana Fatima",
+    "cnic": "35202-3333333-3",
+    "filing_status": "Filer",
+    "declared_income_pkr": 1800000,
+    "estimated_lifestyle_income_pkr": 7455000,
+    "deviation_score": 75.9,
+    "audit_reasons": [
+      "No major deviation detected; declared income consistent with observed assets"
+    ],
+    "linked_records": {
+      "vehicles": [
+        "LHR-2022-3344"
+      ],
+      "utility": "WAP-100892"
+    },
+    "match_confidence": {
+      "excise_LHR-2022-3344": 0.976,
+      "wapda": 1.0
+    }
+  }
+]
