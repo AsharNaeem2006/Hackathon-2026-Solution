@@ -337,7 +337,7 @@ The system is intended for educational, research, and demonstration purposes onl
 
 ## Authors
 
-**TaxGraph AI Team**
+**Ashar Naeem**
 
 CUST Hackathon 2026  
 Graph AI for Broadening the National Tax Net
